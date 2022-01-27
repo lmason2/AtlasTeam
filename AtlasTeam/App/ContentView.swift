@@ -15,6 +15,8 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
+    
+    @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
 
     var body: some View {
         NavigationView {
@@ -35,6 +37,16 @@ struct ContentView: View {
                 ToolbarItem {
                     Button(action: addItem) {
                         Label("Add Item", systemImage: "plus")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isAuthenticated = false
+                    }) {
+                        Image("logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
                     }
                 }
             }

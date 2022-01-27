@@ -13,6 +13,10 @@
 		9A31147C27A3450000143C49 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A31147B27A3450000143C49 /* Preview Assets.xcassets */; };
 		9A31147E27A3450000143C49 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31147D27A3450000143C49 /* Persistence.swift */; };
 		9A31148127A3450000143C49 /* AtlasTeam.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9A31147F27A3450000143C49 /* AtlasTeam.xcdatamodeld */; };
+		9A31149427A3465600143C49 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149327A3465600143C49 /* AuthenticationView.swift */; };
+		9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149527A34D5700143C49 /* SignUpComponent.swift */; };
+		9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149727A34D5E00143C49 /* LogInComponent.swift */; };
+		9A31149A27A35D1400143C49 /* EmailSignInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149927A35D1300143C49 /* EmailSignInComponent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +27,10 @@
 		9A31147B27A3450000143C49 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		9A31147D27A3450000143C49 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		9A31148027A3450000143C49 /* AtlasTeam.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AtlasTeam.xcdatamodel; sourceTree = "<group>"; };
+		9A31149327A3465600143C49 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
+		9A31149527A34D5700143C49 /* SignUpComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpComponent.swift; sourceTree = "<group>"; };
+		9A31149727A34D5E00143C49 /* LogInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInComponent.swift; sourceTree = "<group>"; };
+		9A31149927A35D1300143C49 /* EmailSignInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSignInComponent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +63,10 @@
 		9A31147327A344FE00143C49 /* AtlasTeam */ = {
 			isa = PBXGroup;
 			children = (
-				9A31147427A344FE00143C49 /* AtlasTeamApp.swift */,
-				9A31147627A344FE00143C49 /* ContentView.swift */,
+				9A31148927A3457300143C49 /* Views */,
+				9A31148827A3456C00143C49 /* Components */,
+				9A31148727A3456600143C49 /* Utility */,
+				9A31149227A3461600143C49 /* App */,
 				9A31147827A3450000143C49 /* Assets.xcassets */,
 				9A31147D27A3450000143C49 /* Persistence.swift */,
 				9A31147F27A3450000143C49 /* AtlasTeam.xcdatamodeld */,
@@ -71,6 +81,40 @@
 				9A31147B27A3450000143C49 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		9A31148727A3456600143C49 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		9A31148827A3456C00143C49 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9A31149527A34D5700143C49 /* SignUpComponent.swift */,
+				9A31149727A34D5E00143C49 /* LogInComponent.swift */,
+				9A31149927A35D1300143C49 /* EmailSignInComponent.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		9A31148927A3457300143C49 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9A31149227A3461600143C49 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9A31147427A344FE00143C49 /* AtlasTeamApp.swift */,
+				9A31147627A344FE00143C49 /* ContentView.swift */,
+				9A31149327A3465600143C49 /* AuthenticationView.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,10 +187,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A31149A27A35D1400143C49 /* EmailSignInComponent.swift in Sources */,
 				9A31147E27A3450000143C49 /* Persistence.swift in Sources */,
 				9A31147727A344FE00143C49 /* ContentView.swift in Sources */,
 				9A31148127A3450000143C49 /* AtlasTeam.xcdatamodeld in Sources */,
 				9A31147527A344FE00143C49 /* AtlasTeamApp.swift in Sources */,
+				9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */,
+				9A31149427A3465600143C49 /* AuthenticationView.swift in Sources */,
+				9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

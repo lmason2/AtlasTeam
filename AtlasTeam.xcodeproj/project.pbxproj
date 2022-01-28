@@ -18,6 +18,9 @@
 		9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149727A34D5E00143C49 /* LogInComponent.swift */; };
 		9A31149A27A35D1400143C49 /* EmailSignInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149927A35D1300143C49 /* EmailSignInComponent.swift */; };
 		9A3114A227A4201D00143C49 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A3114A127A4201D00143C49 /* CloudKit.framework */; };
+		9A3114A427A44B2B00143C49 /* CreateTeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3114A327A44B2B00143C49 /* CreateTeamView.swift */; };
+		9A3114A627A44B3700143C49 /* JoinTeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3114A527A44B3700143C49 /* JoinTeamView.swift */; };
+		9A3114A827A4529B00143C49 /* MyAtlasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3114A727A4529B00143C49 /* MyAtlasView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +37,9 @@
 		9A31149927A35D1300143C49 /* EmailSignInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSignInComponent.swift; sourceTree = "<group>"; };
 		9A31149F27A4201700143C49 /* AtlasTeam.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AtlasTeam.entitlements; sourceTree = "<group>"; };
 		9A3114A127A4201D00143C49 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		9A3114A327A44B2B00143C49 /* CreateTeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTeamView.swift; sourceTree = "<group>"; };
+		9A3114A527A44B3700143C49 /* JoinTeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinTeamView.swift; sourceTree = "<group>"; };
+		9A3114A727A4529B00143C49 /* MyAtlasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAtlasView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +115,9 @@
 		9A31148927A3457300143C49 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9A3114A327A44B2B00143C49 /* CreateTeamView.swift */,
+				9A3114A527A44B3700143C49 /* JoinTeamView.swift */,
+				9A3114A727A4529B00143C49 /* MyAtlasView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -205,10 +214,13 @@
 				9A31147E27A3450000143C49 /* Persistence.swift in Sources */,
 				9A31147727A344FE00143C49 /* ContentView.swift in Sources */,
 				9A31148127A3450000143C49 /* AtlasTeam.xcdatamodeld in Sources */,
+				9A3114A427A44B2B00143C49 /* CreateTeamView.swift in Sources */,
+				9A3114A627A44B3700143C49 /* JoinTeamView.swift in Sources */,
 				9A31147527A344FE00143C49 /* AtlasTeamApp.swift in Sources */,
 				9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */,
 				9A31149427A3465600143C49 /* AuthenticationView.swift in Sources */,
 				9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */,
+				9A3114A827A4529B00143C49 /* MyAtlasView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

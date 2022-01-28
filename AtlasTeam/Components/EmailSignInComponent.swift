@@ -46,6 +46,7 @@ struct EmailSignInComponent: View {
                         UserDefaults.standard.set(entry.recordID.recordName, forKey: "userID")
                         UserDefaults.standard.set(entry.value(forKey: "email"), forKey: "email")
                         UserDefaults.standard.set(entry.value(forKey: "username"), forKey: "username")
+                        UserDefaults.standard.set(entry.value(forKey: "team"), forKey: "team")
                         withAnimation(.easeIn(duration: 0.5)) {
                             imageOffset = -600
                             createdAccount = true

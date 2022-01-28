@@ -34,6 +34,7 @@ struct SignUpComponent: View {
         // Save to local
         UserDefaults.standard.set(email, forKey: "email")
         UserDefaults.standard.set(username, forKey: "username")
+        UserDefaults.standard.set("", forKey: "team")
         let publicDatabase = CKContainer.default().publicCloudDatabase
         publicDatabase.save(record) { recordResult, error in
             if error == nil {

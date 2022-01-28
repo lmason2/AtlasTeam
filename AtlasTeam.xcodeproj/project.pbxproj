@@ -17,6 +17,7 @@
 		9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149527A34D5700143C49 /* SignUpComponent.swift */; };
 		9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149727A34D5E00143C49 /* LogInComponent.swift */; };
 		9A31149A27A35D1400143C49 /* EmailSignInComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A31149927A35D1300143C49 /* EmailSignInComponent.swift */; };
+		9A3114A227A4201D00143C49 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A3114A127A4201D00143C49 /* CloudKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,8 @@
 		9A31149527A34D5700143C49 /* SignUpComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpComponent.swift; sourceTree = "<group>"; };
 		9A31149727A34D5E00143C49 /* LogInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInComponent.swift; sourceTree = "<group>"; };
 		9A31149927A35D1300143C49 /* EmailSignInComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSignInComponent.swift; sourceTree = "<group>"; };
+		9A31149F27A4201700143C49 /* AtlasTeam.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AtlasTeam.entitlements; sourceTree = "<group>"; };
+		9A3114A127A4201D00143C49 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A3114A227A4201D00143C49 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,6 +53,7 @@
 			children = (
 				9A31147327A344FE00143C49 /* AtlasTeam */,
 				9A31147227A344FE00143C49 /* Products */,
+				9A3114A027A4201D00143C49 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,6 +68,7 @@
 		9A31147327A344FE00143C49 /* AtlasTeam */ = {
 			isa = PBXGroup;
 			children = (
+				9A31149F27A4201700143C49 /* AtlasTeam.entitlements */,
 				9A31148927A3457300143C49 /* Views */,
 				9A31148827A3456C00143C49 /* Components */,
 				9A31148727A3456600143C49 /* Utility */,
@@ -115,6 +121,14 @@
 				9A31149327A3465600143C49 /* AuthenticationView.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		9A3114A027A4201D00143C49 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9A3114A127A4201D00143C49 /* CloudKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -322,6 +336,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AtlasTeam/AtlasTeam.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AtlasTeam/Preview Content\"";
@@ -351,6 +366,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AtlasTeam/AtlasTeam.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AtlasTeam/Preview Content\"";

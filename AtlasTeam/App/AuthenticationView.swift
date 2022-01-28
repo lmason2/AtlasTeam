@@ -13,7 +13,7 @@ struct AuthenticationView: View {
     @State var isSigningInWithEmail: Bool = false
     @State var timer: Timer? = nil
     @State var count: Int = 0
-    
+
     var body: some View {
         VStack {
             Spacer()

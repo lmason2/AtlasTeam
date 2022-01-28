@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct SignUpComponent: View {
     // MARK: - PROPERTIES
@@ -22,7 +23,27 @@ struct SignUpComponent: View {
     @State var transitioning: Bool = false
     
     func validate() {
-        isAuthenticated = true
+        let record = CKRecord(recordType: "UsersData", recordID: CKRecord.ID())
+
+        if username != "" && email != "" && password != "" && confirmPassword != "" && confirmPassword == password {
+            record["username"] = username
+            record["email"] = email
+            record["password"] = password
+        }
+        
+        // Save to local
+        UserDefaults.standard.set(email, forKey: "email")
+        UserDefaults.standard.set(username, forKey: "username")
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        publicDatabase.save(record) { recordResult, error in
+            if error == nil {
+                UserDefaults.standard.set(record.recordID.recordName, forKey: "userID")
+                isAuthenticated = true
+            }
+            else {
+                print(error)
+            }
+        }
     }
     
     var body: some View {

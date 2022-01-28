@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct EmailSignInComponent: View {
     // MARK: - PROPERTIES
@@ -21,9 +22,62 @@ struct EmailSignInComponent: View {
     @State var timer: Timer? = nil
     @State var createdAccount: Bool = false
     @State var transitioning: Bool = false
+    @State var showWrongPasswordAlert: Bool = false
     
     func validate() {
-        isAuthenticated = true
+        let predicate = NSPredicate(format: "email == %@", email)
+        let query = CKQuery(recordType: "UsersData", predicate: predicate)
+        let operation = CKQueryOperation(query: query)
+        operation.desiredKeys = ["password"]
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        
+        publicDatabase.perform(query, inZoneWith: nil) {results, error in
+
+            if (error != nil) {
+               print("error")
+            } else {
+                if results!.count > 1 {
+                    print("error")
+                    
+                }
+                else if results!.count == 1 {
+                    let entry = results![0]
+                    if password == entry.value(forKey: "password") as! String {
+                        UserDefaults.standard.set(entry.recordID.recordName, forKey: "userID")
+                        UserDefaults.standard.set(entry.value(forKey: "email"), forKey: "email")
+                        UserDefaults.standard.set(entry.value(forKey: "username"), forKey: "username")
+                        withAnimation(.easeIn(duration: 0.5)) {
+                            imageOffset = -600
+                            createdAccount = true
+                        }
+                        var count = 0
+                        if timer != nil {
+                            timer?.invalidate()
+                        }
+                        DispatchQueue.main.async { [self] in
+                            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                                count += 1
+                                if count == 1 {
+                                    withAnimation(.easeOut(duration: 1)) {
+                                        transitioning = true
+                                    }
+                                }
+                                if count == 2 {
+                                    isAuthenticated = true
+                                    timer.invalidate()
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        showWrongPasswordAlert = true
+                    }
+                }
+                else {
+                    showWrongPasswordAlert = true
+                }
+            }
+        }
     }
     
     var body: some View {
@@ -74,22 +128,7 @@ struct EmailSignInComponent: View {
                     .padding(.horizontal, 20)
                     
                     Button(action: {
-                        withAnimation(.easeIn(duration: 0.5)) {
-                            imageOffset = -600
-                            createdAccount = true
-                        }
-                        var count = 0
-                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                            count += 1
-                            if count == 1 {
-                                withAnimation(.easeOut(duration: 1)) {
-                                    transitioning = true
-                                }
-                            }
-                            if count == 2 {
-                                validate()
-                            }
-                        }
+                        validate()
                     }, label: {
                         Text("Log In")
                             .font(.system(size: 18, weight: .light, design: .rounded))
@@ -98,6 +137,9 @@ struct EmailSignInComponent: View {
                             .padding(.horizontal, 20)
                     })
                     .background(Capsule().stroke(Color.accentColor, lineWidth: 2))
+                    .alert("Incorrect Credentials", isPresented: $showWrongPasswordAlert) {
+                        Button("OK", role: .cancel) { }
+                    }
                     
                     Button(action: {
                         withAnimation(.easeIn(duration: 0.5)) {

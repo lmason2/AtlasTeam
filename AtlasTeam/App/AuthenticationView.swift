@@ -52,8 +52,7 @@ struct AuthenticationView: View {
                             Text("Log In")
                                 .font(.system(size: 24, weight: .light, design: .rounded))
                                 .foregroundColor(Color.accentColor)
-                                .padding(.vertical, 5)
-                                .padding(.horizontal, 30)
+                                .frame(width: 125, height: 40)
                                 .background(Capsule().stroke(Color.accentColor, lineWidth: 2))
                         })
                         Button(action: {
@@ -65,8 +64,7 @@ struct AuthenticationView: View {
                             Text("Sign Up")
                                 .font(.system(size: 24, weight: .light, design: .rounded))
                                 .foregroundColor(Color("Blue"))
-                                .padding(.vertical, 5)
-                                .padding(.horizontal, 20)
+                                .frame(width: 125, height: 40)
                                 .background(Capsule().stroke(Color("Blue"), lineWidth: 2))
                         })
                     }

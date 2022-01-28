@@ -14,26 +14,55 @@ struct CreateTeamView: View {
     @State var location: String = ""
     @State var password: String = ""
     @State var confirmPassword: String = ""
-    @State var primaryColor = Color(.sRGB, red: 0.98, green: 0.9, blue: 0.2)
-    @State var secondaryColor = Color(.sRGB, red: 0.98, green: 0.9, blue: 0.2)
+    @State var primaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
+    @State var secondaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
+    @AppStorage("team") var teamAppStorage: String = ""
+    let userID = UserDefaults.standard.string(forKey: "userID")
     
     // MARK: - FUNCTIONS
-    func createTeam() {
-        let record = CKRecord(recordType: "Team", recordID: CKRecord.ID())
+    func addTeamToCoach(coach: CKRecord, team: CKRecord) {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        let reference = CKRecord.Reference(record: coach, action: .none)
+        print(reference)
+        coach["team"] = CKRecord.Reference(record: team, action: .none)
 
-        if name != "" && location != "" && password != "" && confirmPassword != "" && confirmPassword == password {
-            record["name"] = name
-//            record["location"] = location
-            record["password"] = password
-//            record["coach"] = userID
-            
-            let publicDatabase = CKContainer.default().publicCloudDatabase
-            publicDatabase.save(record) { recordResult, error in
-                if error == nil {
-                    print("Successful")
-                }
-                else {
-                    print(error)
+        print("trying to save")
+        print(coach)
+        publicDatabase.save(coach) { record, error in
+            if let error = error {
+                print(error)
+            }
+            else {
+                print("successful")
+                teamAppStorage = team.recordID.recordName
+            }
+        }
+    }
+    
+    func createTeam() {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        publicDatabase.fetch(withRecordID: CKRecord.ID(recordName: userID!)) { (fetched, error) in
+            guard let coachRecord = fetched else {
+                print("returning")
+                return
+            }
+            if name != "" && location != "" && password != "" && confirmPassword != "" && confirmPassword == password {
+                let record = CKRecord(recordType: "Team", recordID: CKRecord.ID())
+                record["name"] = name
+    //            record["location"] = location
+                record["password"] = password
+                record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
+
+                let publicDatabase = CKContainer.default().publicCloudDatabase
+                publicDatabase.save(record) { recordResult, error in
+                    if error == nil {
+                        print("New Team Successful")
+                        addTeamToCoach(coach: coachRecord, team: recordResult!)
+                    }
+                    else {
+                        print("error")
+                        print(error)
+                    }
                 }
             }
         }

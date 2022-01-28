@@ -32,8 +32,7 @@ struct LogInComponent: View {
                                 .font(.system(size: 19, weight: .medium, design: .rounded))
                                 .foregroundColor(Color("Blue"))
                         }
-                        .padding(.vertical, 12)
-                        .padding(.horizontal, 15)
+                        .frame(width:200,height:50)  
                         
                     })
                     .background(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 0.5))
@@ -88,7 +87,8 @@ struct LogInComponent: View {
                                                 if let fetchedInfo = record {
                                                     let email = fetchedInfo["email"] as? String
                                                     let username = fetchedInfo["username"] as? String
-                                                    let team = fetchedInfo["team"] as? String
+                                                    let reference = fetchedInfo["team"] as? CKRecord.Reference
+                                                    let team = reference?.recordID.recordName
                                                     // Save to local
                                                     UserDefaults.standard.set(userID, forKey: "userID")
                                                     UserDefaults.standard.set(email, forKey: "email")
@@ -97,6 +97,9 @@ struct LogInComponent: View {
                                                     
                                                     // Change login state
                                                     isAuthenticated = true
+                                                }
+                                                else {
+                                                    print(error)
                                                 }
                                             }
                                         }

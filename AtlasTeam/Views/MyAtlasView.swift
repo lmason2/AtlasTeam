@@ -11,11 +11,13 @@ struct MyAtlasView: View {
     let userID = UserDefaults.standard.string(forKey: "userID")
     let email = UserDefaults.standard.string(forKey: "email")
     let username = UserDefaults.standard.string(forKey: "username")
+    let team = UserDefaults.standard.string(forKey: "team")
     var body: some View {
         VStack {
             Text(username!)
             Text(email!)
             Text(userID!)
+            Text(team!)
         } //: VSTACK
     }
 }

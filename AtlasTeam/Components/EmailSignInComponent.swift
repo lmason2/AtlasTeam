@@ -31,6 +31,7 @@ struct EmailSignInComponent: View {
         operation.desiredKeys = ["password"]
         let publicDatabase = CKContainer.default().publicCloudDatabase
         
+        print("here")
         publicDatabase.perform(query, inZoneWith: nil) {results, error in
 
             if (error != nil) {
@@ -46,7 +47,9 @@ struct EmailSignInComponent: View {
                         UserDefaults.standard.set(entry.recordID.recordName, forKey: "userID")
                         UserDefaults.standard.set(entry.value(forKey: "email"), forKey: "email")
                         UserDefaults.standard.set(entry.value(forKey: "username"), forKey: "username")
-                        UserDefaults.standard.set(entry.value(forKey: "team"), forKey: "team")
+                        let reference = entry.value(forKey: "team") as? CKRecord.Reference
+                        let team = reference?.recordID.recordName
+                        UserDefaults.standard.set(team, forKey: "team")
                         withAnimation(.easeIn(duration: 0.5)) {
                             imageOffset = -600
                             createdAccount = true

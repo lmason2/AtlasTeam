@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import CloudKit
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -20,11 +21,18 @@ struct ContentView: View {
     @State var underlineHeight: CGFloat = 0
     
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
-    let team = UserDefaults.standard.string(forKey: "team")
+    @AppStorage("team") var team: String = ""
+    
+    func logoutProcess() {
+        UserDefaults.standard.set(nil, forKey: "team")
+        UserDefaults.standard.set(nil, forKey: "username")
+        UserDefaults.standard.set(nil, forKey: "email")
+        UserDefaults.standard.set(nil, forKey: "userID")
+    }
 
     var body: some View {
         NavigationView {
-            if team == nil || team == "" {
+            if team == "" {
                 ZStack {
                     VStack {
                         Spacer()
@@ -45,8 +53,7 @@ struct ContentView: View {
                                     .foregroundColor(Color.black)
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                             }
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 15)
+                            .frame(width: 150, height: 40)
                             .background(RoundedRectangle(cornerRadius: 5).stroke(Color.black, lineWidth: 3))
                             
                         })
@@ -59,8 +66,7 @@ struct ContentView: View {
                                     .foregroundColor(Color.black)
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
                             }
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 15)
+                            .frame(width: 150, height: 40)
                             .background(RoundedRectangle(cornerRadius: 5).stroke(Color.black, lineWidth: 3))
                             
                         })
@@ -71,8 +77,7 @@ struct ContentView: View {
                             Text("Logout")
                                 .foregroundColor(Color("Blue"))
                                 .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .padding(.vertical, 10)
-                                .padding(.horizontal, 50)
+                                .frame(width: 150, height: 40)
                                 .background(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
                         })
                         Spacer()
@@ -97,6 +102,7 @@ struct ContentView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
                             isAuthenticated = false
+                            logoutProcess()
                         }) {
                             Image("logo")
                                 .resizable()

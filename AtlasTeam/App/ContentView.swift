@@ -19,10 +19,10 @@ struct ContentView: View {
     
     @State var titleOffset: CGFloat = -15
     @State var underlineHeight: CGFloat = 0
-    @Binding var dataLoaded: Bool
     @State var myTeam: Team?
     
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    @AppStorage("dataLoaded") var dataLoaded: Bool = false
     @AppStorage("team") var team: String = ""
     
     func getTeam() {
@@ -121,7 +121,7 @@ struct ContentView: View {
                 .navigationBarHidden(true)
             }
             else {
-                if dataLoaded {
+                if dataLoaded && myTeam != nil {
                     MyAtlasView(myTeam: myTeam!)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -153,41 +153,4 @@ struct ContentView: View {
         }
     }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
 }
-
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()

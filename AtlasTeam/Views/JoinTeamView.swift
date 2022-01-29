@@ -15,6 +15,7 @@ struct JoinTeamView: View {
     @State var password: String = ""
     let userID = UserDefaults.standard.string(forKey: "userID")
     @AppStorage("team") var teamAppStorage: String = ""
+    @AppStorage("dataLoaded") var dataLoaded: Bool = false
     
     // MARK: - FUNCTIONS
     func getKeyBasedOnType() -> String {
@@ -55,6 +56,7 @@ struct JoinTeamView: View {
                                 }
                                 else {
                                     print("successfully added team to self")
+                                    dataLoaded = false
                                     teamAppStorage = team.recordID.recordName
                                 }
                             }

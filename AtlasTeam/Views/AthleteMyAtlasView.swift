@@ -11,49 +11,98 @@ struct AthleteMyAtlasView: View {
     let primaryColor: UIColor
     let secondaryColor: UIColor
     var body: some View {
-        GroupBox("Team Announcements") {
-            Divider()
-            ScrollView(.horizontal) {
-                Text("text")
-                Text("text")
+        VStack{
+            VStack {
+                HStack {
+                    Text("Team Announcements")
+                    .foregroundColor(Color(secondaryColor))
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Spacer()
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                Divider()
+                ScrollView(.horizontal) {
+                    Text("text")
+                    Text("text")
+                }
+                .padding()
             }
-        }
-        .foregroundColor(Color(secondaryColor))
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
-        .padding(.horizontal, 10)
-        
-        GroupBox("My Training") {
-            Divider()
-            ScrollView(.horizontal) {
-                Text("text")
-                Text("text")
+            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
+            .background(Color(UIColor.systemGray6))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            
+            VStack {
+                HStack {
+                    Text("My Training")
+                    .foregroundColor(Color(secondaryColor))
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Spacer()
+                    Button(action: {
+                        print("adding training")
+                    }, label: {
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(Color(secondaryColor))
+                    })
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                Divider()
+                ScrollView(.horizontal) {
+                    Text("text")
+                    Text("text")
+                }
+                .padding()
             }
-        }
-        .foregroundColor(Color(secondaryColor))
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
-        .padding(.horizontal, 10)
-        
-        GroupBox("Upcoming Practices") {
-            Divider()
-            ScrollView(.horizontal) {
-                Text("text")
-                Text("text")
+            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
+            .background(Color(UIColor.systemGray6))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            
+            VStack {
+                HStack {
+                    Text("Upcoming Practices")
+                    .foregroundColor(Color(secondaryColor))
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Spacer()
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                Divider()
+                ScrollView(.horizontal) {
+                    Text("text")
+                    Text("text")
+                }
+                .padding()
             }
-        }
-        .foregroundColor(Color(secondaryColor))
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
-        .padding(.horizontal, 10)
-        
-        GroupBox("Upcoming Races") {
-            Divider()
-            ScrollView(.horizontal) {
-                Text("text")
-                Text("text")
+            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
+            .background(Color(UIColor.systemGray6))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            
+            VStack {
+                HStack {
+                    Text("Upcoming Races")
+                    .foregroundColor(Color(secondaryColor))
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    Spacer()
+                }
+                .padding(.horizontal, 10)
+                .padding(.top, 10)
+                Divider()
+                ScrollView(.horizontal) {
+                    Text("text")
+                    Text("text")
+                }
+                .padding()
             }
-        }
-        .foregroundColor(Color(secondaryColor))
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
-        .padding(.horizontal, 10)
+            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(primaryColor), lineWidth: 2))
+            .background(Color(UIColor.systemGray6))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            
+        } //: VSTACK
     }
 }
 

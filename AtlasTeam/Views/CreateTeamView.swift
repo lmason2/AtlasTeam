@@ -17,6 +17,7 @@ struct CreateTeamView: View {
     @State var primaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
     @State var secondaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
     @AppStorage("team") var teamAppStorage: String = ""
+    @AppStorage("dataLoaded") var dataLoaded: Bool = false
     let userID = UserDefaults.standard.string(forKey: "userID")
     
     // MARK: - FUNCTIONS
@@ -31,6 +32,7 @@ struct CreateTeamView: View {
             }
             else {
                 print("successful")
+                dataLoaded = false
                 teamAppStorage = team.recordID.recordName
             }
         }

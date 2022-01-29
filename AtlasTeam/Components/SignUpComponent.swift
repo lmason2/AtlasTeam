@@ -22,6 +22,7 @@ struct SignUpComponent: View {
     @State var createdAccount: Bool = false
     @State var transitioning: Bool = false
     
+    // MARK: - FUNCTIONS
     func validate() {
         let record = CKRecord(recordType: "UsersData", recordID: CKRecord.ID())
 
@@ -47,6 +48,7 @@ struct SignUpComponent: View {
         }
     }
     
+    // MARK: - BODY
     var body: some View {
         VStack(spacing: 15) {
             HStack {
@@ -71,50 +73,14 @@ struct SignUpComponent: View {
             if !createdAccount {
                 VStack {
                     Divider()
-                    TextField(
-                        "Username",
-                        text: $username
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
                     
-                    TextField(
-                        "Email",
-                        text: $email
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
+                    // Fields
+                    SignUpFieldComponent(isSecure: false, textBinding: $username, textPreview: "Username", keyboardType: .default)
+                    SignUpFieldComponent(isSecure: false, textBinding: $email, textPreview: "Email", keyboardType: .emailAddress)
+                    SignUpFieldComponent(isSecure: true, textBinding: $password, textPreview: "Password", keyboardType: .default)
+                    SignUpFieldComponent(isSecure: true, textBinding: $confirmPassword, textPreview: "Confirm Password", keyboardType: .default)
                     
-                    TextField(
-                        "Password",
-                        text: $password
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
-                    
-                    TextField(
-                        "Confirm Password",
-                        text: $confirmPassword
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
-                    
+                    // New Account Button
                     Button(action: {
                         withAnimation(.easeIn(duration: 0.5)) {
                             imageOffset = -600
@@ -141,6 +107,7 @@ struct SignUpComponent: View {
                     })
                     .background(Capsule().stroke(Color.accentColor, lineWidth: 2))
                     
+                    // Go Back Button
                     Button(action: {
                         withAnimation(.easeIn(duration: 0.5)) {
                             wantsToSignUp = false

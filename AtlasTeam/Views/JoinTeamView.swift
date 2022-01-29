@@ -17,6 +17,19 @@ struct JoinTeamView: View {
     @AppStorage("team") var teamAppStorage: String = ""
     
     // MARK: - FUNCTIONS
+    func getKeyBasedOnType() -> String {
+        switch newTeamMemberType {
+        case .trainer:
+            return "trainers"
+        case .athlete:
+            return "athletes"
+        case .assistant:
+            return "assistantCoaches"
+        case .none:
+            return ""
+        }
+    }
+    
     func joinTeam() {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         let predicate = NSPredicate(format: "name == %@", name)
@@ -46,8 +59,8 @@ struct JoinTeamView: View {
                                 }
                             }
                             let selfReference = CKRecord.Reference(record: selfRecord, action: .none)
-                            if var currentAthletes = team.value(forKey: "athletes") as? [CKRecord.Reference] {
-                                currentAthletes.append(selfReference)
+                            if var currentMemberList = team.value(forKey: getKeyBasedOnType()) as? [CKRecord.Reference] {
+                                currentMemberList.append(selfReference)
                                 publicDatabase.save(team) { record, error in
                                     if let error = error {
                                         print(error)
@@ -56,10 +69,10 @@ struct JoinTeamView: View {
                                         print("successfully added self to team")
                                     }
                                 }
-                            }
+                            } //: APPENDING LIST CONDITIONAL
                             else {
-                                var currentAthletes: [CKRecord.Reference] = [selfReference]
-                                team["athletes"] = currentAthletes
+                                var currentMemberType: [CKRecord.Reference] = [selfReference]
+                                team[getKeyBasedOnType()] = currentMemberType
                                 publicDatabase.save(team) { record, error in
                                     if let error = error {
                                         print(error)
@@ -68,13 +81,12 @@ struct JoinTeamView: View {
                                         print("successfully added self to team with no athletes")
                                     }
                                 }
-                            }
-                        }
-                        
-                    }
-                }
-            }
-        }
+                            } //: NEW LIST CONDITIONAL
+                        } //: RECORD EXISTS
+                    } //: FETCH CLOSURE
+                } //: TEAM PASSWORD CONDITIONAL
+            } //: TEAM NAME EXISTS CONDITIONAL
+        } //: QUERY FOR TEAM NAME
     }
     
     func getStringVersion() -> String {
@@ -103,7 +115,7 @@ struct JoinTeamView: View {
                     .disableAutocorrection(true)
                     .autocapitalization(.words)
                     
-                    TextField(
+                    SecureField(
                         "Password",
                         text: $password
                     )
@@ -111,14 +123,21 @@ struct JoinTeamView: View {
                     .textInputAutocapitalization(.never)
                     .disableAutocorrection(true)
                 }
+                
+                // Submit form button
                 Button(action: {
-                    withAnimation {
-                        joinTeam()
+                    if name != "" && password != "" {
+                        withAnimation {
+                            joinTeam()
+                        }
                     }
+                   
                 }, label: {
                     Text("Join Team")
                         .foregroundColor(Color("Blue"))
                 })
+                
+                // Bottom of form to go back to type of user
                 Button(action: {
                     withAnimation {
                         newTeamMemberType = .none

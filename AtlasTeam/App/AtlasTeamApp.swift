@@ -11,11 +11,12 @@ import SwiftUI
 struct AtlasTeamApp: App {
     let persistenceController = PersistenceController.shared
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
+    @State var dataLoaded: Bool = false
 
     var body: some Scene {
         WindowGroup {
             if isAuthenticated {
-                ContentView()
+                ContentView(dataLoaded: $dataLoaded)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
             }
             else {

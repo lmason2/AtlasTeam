@@ -24,6 +24,7 @@ struct EmailSignInComponent: View {
     @State var transitioning: Bool = false
     @State var showWrongPasswordAlert: Bool = false
     
+    // MARK: - FUNCTIONS
     func validate() {
         let predicate = NSPredicate(format: "email == %@", email)
         let query = CKQuery(recordType: "UsersData", predicate: predicate)
@@ -84,6 +85,7 @@ struct EmailSignInComponent: View {
         }
     }
     
+    // MARK: - BODY
     var body: some View {
         VStack(spacing: 15) {
             HStack {
@@ -109,27 +111,8 @@ struct EmailSignInComponent: View {
                 VStack {
                     Divider()
                     
-                    TextField(
-                        "Email",
-                        text: $email
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
-                    
-                    TextField(
-                        "Password",
-                        text: $password
-                    )
-                    .foregroundColor(Color.accentColor)
-                    .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color("Blue"), lineWidth: 3))
-                    .textInputAutocapitalization(.never)
-                    .disableAutocorrection(true)
-                    .padding(.horizontal, 20)
+                    SignUpFieldComponent(isSecure: false, textBinding: $email, textPreview: "Email", keyboardType: .emailAddress)
+                    SignUpFieldComponent(isSecure: true, textBinding: $password, textPreview: "Password", keyboardType: .default)
                     
                     Button(action: {
                         validate()

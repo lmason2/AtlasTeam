@@ -23,11 +23,8 @@ struct CreateTeamView: View {
     func addTeamToCoach(coach: CKRecord, team: CKRecord) {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         let reference = CKRecord.Reference(record: coach, action: .none)
-        print(reference)
         coach["team"] = CKRecord.Reference(record: team, action: .none)
 
-        print("trying to save")
-        print(coach)
         publicDatabase.save(coach) { record, error in
             if let error = error {
                 print(error)
@@ -50,8 +47,12 @@ struct CreateTeamView: View {
                 let record = CKRecord(recordType: "Team", recordID: CKRecord.ID())
                 record["name"] = name
     //            record["location"] = location
+                let primaryColorString = UIColor(primaryColor).toHex
+                let secondaryColorString = UIColor(secondaryColor).toHex
                 record["password"] = password
                 record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
+                record["primaryColor"] = primaryColorString ?? UIColor(Color.accentColor).toHex!
+                record["secondaryColor"] = secondaryColorString ?? UIColor(Color("Blue")).toHex!
 
                 let publicDatabase = CKContainer.default().publicCloudDatabase
                 publicDatabase.save(record) { recordResult, error in
@@ -63,9 +64,9 @@ struct CreateTeamView: View {
                         print("error")
                         print(error)
                     }
-                }
-            }
-        }
+                } //: SAVE NEW TEAM
+            } //: FIELD CHECKING
+        } //: FETCH REFERENCE TO USER FOR COACH
     }
     
     // MARK: - BODY
@@ -87,7 +88,7 @@ struct CreateTeamView: View {
                 .foregroundColor(Color.accentColor)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
-            }
+            } //: SECTION
             
             Section("Colors") {
                 VStack{
@@ -95,12 +96,11 @@ struct CreateTeamView: View {
                         .foregroundColor(Color(.placeholderText))
                     ColorPicker("Secondary Color", selection: $secondaryColor)
                         .foregroundColor(Color(.placeholderText))
-                }
-                
-            }
+                } //: VSTACK
+            } //: SECTION
             
             Section("Security") {
-                TextField(
+                SecureField (
                     "Password",
                     text: $password
                 )
@@ -108,14 +108,16 @@ struct CreateTeamView: View {
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
                 
-                TextField(
+                SecureField (
                     "Confirm Password",
                     text: $confirmPassword
                 )
                 .foregroundColor(Color.accentColor)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
-            }
+            } //: SECTION
+            
+            // Create team submit button
             Button(action: {
                 createTeam()
             }, label: {

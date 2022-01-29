@@ -19,9 +19,33 @@ struct ContentView: View {
     
     @State var titleOffset: CGFloat = -15
     @State var underlineHeight: CGFloat = 0
+    @Binding var dataLoaded: Bool
+    @State var myTeam: Team?
     
     @AppStorage("isAuthenticated") var isAuthenticated: Bool = false
     @AppStorage("team") var team: String = ""
+    
+    func getTeam() {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        publicDatabase.fetch(withRecordID: CKRecord.ID(recordName: team)) { (fetched, error) in
+            guard let teamRecord = fetched else {
+                print("Error")
+                return
+            }
+            let coach = teamRecord.value(forKey: "coach") as! CKRecord.Reference
+            let name = teamRecord.value(forKey: "name") as! String
+//            myTeam.location = teamRecord.value(forKey: "location") as! CLLocation
+            let assistants = teamRecord.value(forKey: "assistantCoaches") as? [CKRecord.Reference] ?? []
+            let trainers = teamRecord.value(forKey: "trainers") as? [CKRecord.Reference] ?? []
+            let athletes = teamRecord.value(forKey: "athletes") as? [CKRecord.Reference] ?? []
+            let primaryString = teamRecord.value(forKey: "primaryColor") as! String
+            let secondaryString = teamRecord.value(forKey: "secondaryColor") as! String
+            
+            myTeam = Team(assistantCoaches: assistants, athletes: athletes, coach: coach, location: CLLocation(), name: name, password: "", trainers: trainers, primaryString: primaryString, secondaryString: secondaryString)
+            
+            dataLoaded = true
+        }
+    }
     
     func logoutProcess() {
         UserDefaults.standard.set(nil, forKey: "team")
@@ -97,20 +121,28 @@ struct ContentView: View {
                 .navigationBarHidden(true)
             }
             else {
-                MyAtlasView()
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            isAuthenticated = false
-                            logoutProcess()
-                        }) {
-                            Image("logo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30, height: 30)
+                if dataLoaded {
+                    MyAtlasView(myTeam: myTeam!)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(action: {
+                                isAuthenticated = false
+                                logoutProcess()
+                            }) {
+                                Image("logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                            }
                         }
-                    }
-                } //: TOOLBAR
+                    } //: TOOLBAR
+                }
+                else {
+                    ProgressView("Loading Team…")
+                        .onAppear {
+                            getTeam()
+                        }
+                }
             } //: CONDITIONAL
         } //: NAVIGATION
         .onAppear {
@@ -159,9 +191,3 @@ private let itemFormatter: DateFormatter = {
     formatter.timeStyle = .medium
     return formatter
 }()
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}

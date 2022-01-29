@@ -32,6 +32,11 @@ struct AthleteMyAtlasView: View {
             .background(Color(UIColor.systemGray6))
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
+            .clipped()
+            .shadow(color: .gray, radius: 3, x: 0, y: 0)
+            .clipped()
+            .shadow(color: .gray, radius: 3, x: 0, y: 0)
+            
             
             VStack {
                 HStack {
@@ -59,6 +64,8 @@ struct AthleteMyAtlasView: View {
             .background(Color(UIColor.systemGray6))
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
+            .clipped()
+            .shadow(color: .gray, radius: 3, x: 0, y: 0)
             
             VStack {
                 HStack {
@@ -80,6 +87,8 @@ struct AthleteMyAtlasView: View {
             .background(Color(UIColor.systemGray6))
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
+            .clipped()
+            .shadow(color: .gray, radius: 3, x: 0, y: 0)
             
             VStack {
                 HStack {
@@ -101,6 +110,8 @@ struct AthleteMyAtlasView: View {
             .background(Color(UIColor.systemGray6))
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
+            .clipped()
+            .shadow(color: .gray, radius: 3, x: 0, y: 0)
             
         } //: VSTACK
     }

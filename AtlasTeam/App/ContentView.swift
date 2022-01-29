@@ -52,6 +52,7 @@ struct ContentView: View {
         UserDefaults.standard.set(nil, forKey: "username")
         UserDefaults.standard.set(nil, forKey: "email")
         UserDefaults.standard.set(nil, forKey: "userID")
+        dataLoaded = false
     }
 
     var body: some View {

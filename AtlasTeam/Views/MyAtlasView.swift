@@ -49,10 +49,9 @@ struct MyAtlasView: View {
     var body: some View {
         VStack {
             Divider()
-            ScrollView(.vertical) {
+            ScrollView(.vertical, showsIndicators: false) {
                 if myTeam.coach.recordID.recordName == userID! {
-                    Text("I'm a coach")
-                    CoachMyAtlasView(primaryColor: myTeam.primaryColor, secondaryColor: myTeam.secondaryColor)
+                    CoachMyAtlasView(myTeam: myTeam)
                 }
                 else if (checkAthletes()){
                     Text("I'm an athlete")

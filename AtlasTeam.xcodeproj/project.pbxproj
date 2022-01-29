@@ -26,6 +26,8 @@
 		9AB710CB27A4C049005F15F6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710CA27A4C049005F15F6 /* Extensions.swift */; };
 		9AB710CD27A4C435005F15F6 /* AthleteMyAtlasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710CC27A4C435005F15F6 /* AthleteMyAtlasView.swift */; };
 		9AB710CF27A4C450005F15F6 /* CoachMyAtlasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710CE27A4C450005F15F6 /* CoachMyAtlasView.swift */; };
+		9AB710D127A4E302005F15F6 /* Athlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710D027A4E302005F15F6 /* Athlete.swift */; };
+		9AB710D327A4E3DF005F15F6 /* AthleteRowComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +52,8 @@
 		9AB710CA27A4C049005F15F6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		9AB710CC27A4C435005F15F6 /* AthleteMyAtlasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteMyAtlasView.swift; sourceTree = "<group>"; };
 		9AB710CE27A4C450005F15F6 /* CoachMyAtlasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachMyAtlasView.swift; sourceTree = "<group>"; };
+		9AB710D027A4E302005F15F6 /* Athlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Athlete.swift; sourceTree = "<group>"; };
+		9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteRowComponent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,7 @@
 				9A31149727A34D5E00143C49 /* LogInComponent.swift */,
 				9A31149927A35D1300143C49 /* EmailSignInComponent.swift */,
 				9AB710C527A4B2CC005F15F6 /* SignUpFieldComponent.swift */,
+				9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -159,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				9AB710C827A4BA70005F15F6 /* Team.swift */,
+				9AB710D027A4E302005F15F6 /* Athlete.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -247,7 +253,9 @@
 				9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */,
 				9A31149427A3465600143C49 /* AuthenticationView.swift in Sources */,
 				9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */,
+				9AB710D127A4E302005F15F6 /* Athlete.swift in Sources */,
 				9A3114A827A4529B00143C49 /* MyAtlasView.swift in Sources */,
+				9AB710D327A4E3DF005F15F6 /* AthleteRowComponent.swift in Sources */,
 				9AB710CB27A4C049005F15F6 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,7 +10,7 @@ import CloudKit
 
 struct JoinTeamView: View {
     // MARK: - PROPERTIES
-    @State var newTeamMemberType: NewTeamMember = .none
+    @State var newTeamMemberType: NewTeamMember = .athlete
     @State var name: String = ""
     @State var password: String = ""
     let userID = UserDefaults.standard.string(forKey: "userID")
@@ -35,8 +35,6 @@ struct JoinTeamView: View {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         let predicate = NSPredicate(format: "name == %@", name)
         let query = CKQuery(recordType: "Team", predicate: predicate)
-        let operation = CKQueryOperation(query: query)
-        operation.desiredKeys = ["password"]
         
         publicDatabase.perform(query, inZoneWith: nil) {results, error in
             if results == nil {
@@ -44,6 +42,9 @@ struct JoinTeamView: View {
                 return
             }
             else {
+                var addingSelfToTeam = false
+                var addingTeamToSelf = false
+                dataLoaded = false
                 let team = results![0]
                 if password == team.value(forKey: "password") as! String {
                     let teamReference = CKRecord.Reference(record: team, action: .none)
@@ -56,18 +57,26 @@ struct JoinTeamView: View {
                                 }
                                 else {
                                     print("successfully added team to self")
-                                    dataLoaded = false
-                                    teamAppStorage = team.recordID.recordName
+                                    addingTeamToSelf = true
+                                    if addingSelfToTeam == true {
+                                        teamAppStorage = team.recordID.recordName
+                                    }
                                 }
                             }
                             let selfReference = CKRecord.Reference(record: selfRecord, action: .none)
                             if var currentMemberList = team.value(forKey: getKeyBasedOnType()) as? [CKRecord.Reference] {
                                 currentMemberList.append(selfReference)
+                                team[getKeyBasedOnType()] = currentMemberList
                                 publicDatabase.save(team) { record, error in
                                     if let error = error {
                                         print(error)
                                     }
                                     else {
+                                        addingSelfToTeam = true
+                                        if addingTeamToSelf == true {
+                                            teamAppStorage = team.recordID.recordName
+                                        }
+                                        
                                         print("successfully added self to team")
                                     }
                                 }
@@ -80,6 +89,10 @@ struct JoinTeamView: View {
                                         print(error)
                                     }
                                     else {
+                                        addingSelfToTeam = true
+                                        if addingTeamToSelf == true {
+                                            teamAppStorage = team.recordID.recordName
+                                        }
                                         print("successfully added self to team with no athletes")
                                     }
                                 }

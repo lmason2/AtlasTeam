@@ -21,30 +21,82 @@ struct SignUpComponent: View {
     @State var timer: Timer? = nil
     @State var createdAccount: Bool = false
     @State var transitioning: Bool = false
+    @State var showAlert: Bool = false
+    @State var message: String = ""
     
     // MARK: - FUNCTIONS
     func validate() {
         let record = CKRecord(recordType: "UsersData", recordID: CKRecord.ID())
 
-        if username != "" && email != "" && password != "" && confirmPassword != "" && confirmPassword == password {
-            record["username"] = username
-            record["email"] = email
-            record["password"] = password
-        }
-        
-        // Save to local
-        UserDefaults.standard.set(email, forKey: "email")
-        UserDefaults.standard.set(username, forKey: "username")
-        UserDefaults.standard.set("", forKey: "team")
-        let publicDatabase = CKContainer.default().publicCloudDatabase
-        publicDatabase.save(record) { recordResult, error in
-            if error == nil {
-                UserDefaults.standard.set(record.recordID.recordName, forKey: "userID")
-                isAuthenticated = true
+        if username != "" && email != "" && password != "" && confirmPassword != "" {
+            if confirmPassword == password {
+                let publicDatabase = CKContainer.default().publicCloudDatabase
+                let predicate = NSPredicate(format: "username == %@", username)
+                let query = CKQuery(recordType: "UsersData", predicate: predicate)
+                publicDatabase.perform(query, inZoneWith: nil) {results, error in
+                    if results == [] {
+                        let predicate = NSPredicate(format: "email == %@", email)
+                        let query = CKQuery(recordType: "UsersData", predicate: predicate)
+                        publicDatabase.perform(query, inZoneWith: nil) {results, error in
+                            if results == [] {
+                                record["username"] = username
+                                record["email"] = email
+                                record["password"] = password
+                                // Save to local
+                                UserDefaults.standard.set(email, forKey: "email")
+                                UserDefaults.standard.set(username, forKey: "username")
+                                UserDefaults.standard.set("", forKey: "team")
+                                let publicDatabase = CKContainer.default().publicCloudDatabase
+                                publicDatabase.save(record) { recordResult, error in
+                                    if error == nil {
+                                        UserDefaults.standard.set(record.recordID.recordName, forKey: "userID")
+                                        withAnimation(.easeIn(duration: 0.5)) {
+                                            imageOffset = -600
+                                            createdAccount = true
+                                        }
+                                        var count = 0
+                                        if timer != nil {
+                                            timer?.invalidate()
+                                        }
+                                        DispatchQueue.main.async { [self] in
+                                            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+                                                count += 1
+                                                if count == 1 {
+                                                    withAnimation(.easeOut(duration: 1)) {
+                                                        transitioning = true
+                                                    }
+                                                }
+                                                if count == 2 {
+                                                    isAuthenticated = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        print(error)
+                                    }
+                                }
+                            }
+                            else {
+                                message = "Email already in use"
+                                showAlert = true
+                            }
+                        }
+                    }
+                    else {
+                        message = "Username already exists"
+                        showAlert = true
+                    }
+                }
             }
             else {
-                print(error)
+                message = "Passwords don't match"
+                showAlert = true
             }
+        }
+        else {
+            message = "Fill all fields"
+            showAlert = true
         }
     }
     
@@ -82,22 +134,7 @@ struct SignUpComponent: View {
                     
                     // New Account Button
                     Button(action: {
-                        withAnimation(.easeIn(duration: 0.5)) {
-                            imageOffset = -600
-                            createdAccount = true
-                        }
-                        var count = 0
-                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                            count += 1
-                            if count == 1 {
-                                withAnimation(.easeOut(duration: 1)) {
-                                    transitioning = true
-                                }
-                            }
-                            if count == 2 {
-                                validate()
-                            }
-                        }
+                        validate()
                     }, label: {
                         Text("Create Account")
                             .font(.system(size: 18, weight: .light, design: .rounded))
@@ -123,6 +160,9 @@ struct SignUpComponent: View {
                 } //: VSTACK
                 .transition(.offset(x: 0, y: 600))
             } //: CONDITIONAL
+        } //: VSTACK
+        .alert(message, isPresented: $showAlert) {
+            Button("Ok", role: .cancel) {}
         }
     }
 }

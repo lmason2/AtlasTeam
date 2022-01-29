@@ -48,14 +48,20 @@ struct MyAtlasView: View {
     // MARK: - BODY
     var body: some View {
         VStack {
+            HStack {
+                Text("\(myTeam.city), \(myTeam.state)")
+                    .font(.subheadline)
+                Spacer()
+            }
+            .padding(.leading, 20)
             Divider()
+            
             ScrollView(.vertical, showsIndicators: false) {
                 if myTeam.coach.recordID.recordName == userID! {
                     CoachMyAtlasView(myTeam: myTeam)
                 }
                 else if (checkAthletes()){
-                    Text("I'm an athlete")
-                    AthleteMyAtlasView(primaryColor: myTeam.primaryColor, secondaryColor: myTeam.secondaryColor)
+                    AthleteMyAtlasView(myTeam: myTeam)
                 }
                 else if (checkTrainers()) {
                     Text("I'm a trainer")

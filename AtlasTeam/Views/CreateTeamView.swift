@@ -11,11 +11,14 @@ import CloudKit
 struct CreateTeamView: View {
     // MARK: - PROPERTIES
     @State var name: String = ""
-    @State var location: String = ""
+    @State var city: String = ""
+    @State var state: String = ""
     @State var password: String = ""
     @State var confirmPassword: String = ""
     @State var primaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
     @State var secondaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
+    @State var showAlert: Bool = false
+    @State var message: String = ""
     @AppStorage("team") var teamAppStorage: String = ""
     @AppStorage("dataLoaded") var dataLoaded: Bool = false
     let userID = UserDefaults.standard.string(forKey: "userID")
@@ -45,29 +48,51 @@ struct CreateTeamView: View {
                 print("returning")
                 return
             }
-            if name != "" && location != "" && password != "" && confirmPassword != "" && confirmPassword == password {
-                let record = CKRecord(recordType: "Team", recordID: CKRecord.ID())
-                record["name"] = name
-    //            record["location"] = location
-                let primaryColorString = UIColor(primaryColor).toHex
-                let secondaryColorString = UIColor(secondaryColor).toHex
-                record["password"] = password
-                record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
-                record["primaryColor"] = primaryColorString ?? UIColor(Color.accentColor).toHex!
-                record["secondaryColor"] = secondaryColorString ?? UIColor(Color("Blue")).toHex!
-
+            if name != "" && city != "" && state != "" && password != "" && confirmPassword != "" && confirmPassword == password {
                 let publicDatabase = CKContainer.default().publicCloudDatabase
-                publicDatabase.save(record) { recordResult, error in
-                    if error == nil {
-                        print("New Team Successful")
-                        addTeamToCoach(coach: coachRecord, team: recordResult!)
-                    }
+                let predicate = NSPredicate(format: "name == %@", name)
+                let query = CKQuery(recordType: "Team", predicate: predicate)
+                publicDatabase.perform(query, inZoneWith: nil) {results, error in
+                    if results == [] {
+                        let record = CKRecord(recordType: "Team", recordID: CKRecord.ID())
+                        record["name"] = name
+                        record["city"] = city
+                        record["state"] = state
+                        let primaryColorString = UIColor(primaryColor).toHex
+                        let secondaryColorString = UIColor(secondaryColor).toHex
+                        record["password"] = password
+                        record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
+                        record["primaryColor"] = primaryColorString ?? UIColor(Color.accentColor).toHex!
+                        record["secondaryColor"] = secondaryColorString ?? UIColor(Color("Blue")).toHex!
+
+                        publicDatabase.save(record) { recordResult, error in
+                            if error == nil {
+                                print("New Team Successful")
+                                name = ""
+                                city = ""
+                                state = ""
+                                password = ""
+                                confirmPassword = ""
+                                addTeamToCoach(coach: coachRecord, team: recordResult!)
+                            }
+                            else {
+                                print("error")
+                                print(error)
+                            }
+                        } //: SAVE NEW TEAM
+                        return
+                    } //: TEAM NAME CHECK PASSED
                     else {
-                        print("error")
-                        print(error)
-                    }
-                } //: SAVE NEW TEAM
+                        print(results)
+                        message = "Team name already exists"
+                        showAlert = true
+                    } //: TEAM NAME ALREADY EXISTS
+                } //: QUERY FOR TEAM NAME EXISTS
             } //: FIELD CHECKING
+            else {
+                message = "Fill all fields"
+                showAlert = true
+            }
         } //: FETCH REFERENCE TO USER FOR COACH
     }
     
@@ -80,16 +105,21 @@ struct CreateTeamView: View {
                     text: $name
                 )
                 .foregroundColor(Color.accentColor)
-                .disableAutocorrection(true)
                 .autocapitalization(.words)
                 
                 TextField(
-                    "Location",
-                    text: $location
+                    "City",
+                    text: $city
                 )
                 .foregroundColor(Color.accentColor)
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
+                .autocapitalization(.words)
+                
+                TextField(
+                    "State",
+                    text: $state
+                )
+                .foregroundColor(Color.accentColor)
+                .autocapitalization(.words)
             } //: SECTION
             
             Section("Colors") {
@@ -128,6 +158,9 @@ struct CreateTeamView: View {
             })
         }
         .navigationBarTitle("Create Team")
+        .alert(message, isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        }
     }
 }
 

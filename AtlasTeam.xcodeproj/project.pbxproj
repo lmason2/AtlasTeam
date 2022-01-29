@@ -28,6 +28,20 @@
 		9AB710CF27A4C450005F15F6 /* CoachMyAtlasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710CE27A4C450005F15F6 /* CoachMyAtlasView.swift */; };
 		9AB710D127A4E302005F15F6 /* Athlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710D027A4E302005F15F6 /* Athlete.swift */; };
 		9AB710D327A4E3DF005F15F6 /* AthleteRowComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */; };
+		9AB710E127A57F04005F15F6 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710E027A57F04005F15F6 /* Constant.swift */; };
+		9AB710E327A58073005F15F6 /* AnnouncementListComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710E227A58073005F15F6 /* AnnouncementListComponent.swift */; };
+		9AB710E527A5820B005F15F6 /* Practice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710E427A5820B005F15F6 /* Practice.swift */; };
+		9AB710E727A58210005F15F6 /* Race.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710E627A58210005F15F6 /* Race.swift */; };
+		9AB710E927A58598005F15F6 /* PracticeListComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710E827A58598005F15F6 /* PracticeListComponent.swift */; };
+		9AB710EB27A58A59005F15F6 /* NewAnnouncementSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710EA27A58A59005F15F6 /* NewAnnouncementSheetView.swift */; };
+		9AB710EF27A58A79005F15F6 /* NewPracticeSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710EE27A58A79005F15F6 /* NewPracticeSheetView.swift */; };
+		9AB710F127A58A7F005F15F6 /* NewRaceSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710F027A58A7F005F15F6 /* NewRaceSheetView.swift */; };
+		9AB710F327A58A88005F15F6 /* NewTrainingSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710F227A58A88005F15F6 /* NewTrainingSheetView.swift */; };
+		9AB710F527A593C2005F15F6 /* RaceListComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710F427A593C2005F15F6 /* RaceListComponent.swift */; };
+		9AB710F727A5A3E4005F15F6 /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710F627A5A3E4005F15F6 /* Training.swift */; };
+		9AB710F927A5A4F0005F15F6 /* TrainingListComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710F827A5A4F0005F15F6 /* TrainingListComponent.swift */; };
+		9AB710FB27A5AD0C005F15F6 /* TrainingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710FA27A5AD0C005F15F6 /* TrainingDetailView.swift */; };
+		9AB710FD27A5C7FE005F15F6 /* CompleteTrainingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB710FC27A5C7FE005F15F6 /* CompleteTrainingDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +68,20 @@
 		9AB710CE27A4C450005F15F6 /* CoachMyAtlasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachMyAtlasView.swift; sourceTree = "<group>"; };
 		9AB710D027A4E302005F15F6 /* Athlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Athlete.swift; sourceTree = "<group>"; };
 		9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteRowComponent.swift; sourceTree = "<group>"; };
+		9AB710E027A57F04005F15F6 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		9AB710E227A58073005F15F6 /* AnnouncementListComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementListComponent.swift; sourceTree = "<group>"; };
+		9AB710E427A5820B005F15F6 /* Practice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Practice.swift; sourceTree = "<group>"; };
+		9AB710E627A58210005F15F6 /* Race.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Race.swift; sourceTree = "<group>"; };
+		9AB710E827A58598005F15F6 /* PracticeListComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeListComponent.swift; sourceTree = "<group>"; };
+		9AB710EA27A58A59005F15F6 /* NewAnnouncementSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementSheetView.swift; sourceTree = "<group>"; };
+		9AB710EE27A58A79005F15F6 /* NewPracticeSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPracticeSheetView.swift; sourceTree = "<group>"; };
+		9AB710F027A58A7F005F15F6 /* NewRaceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewRaceSheetView.swift; sourceTree = "<group>"; };
+		9AB710F227A58A88005F15F6 /* NewTrainingSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrainingSheetView.swift; sourceTree = "<group>"; };
+		9AB710F427A593C2005F15F6 /* RaceListComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaceListComponent.swift; sourceTree = "<group>"; };
+		9AB710F627A5A3E4005F15F6 /* Training.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Training.swift; sourceTree = "<group>"; };
+		9AB710F827A5A4F0005F15F6 /* TrainingListComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingListComponent.swift; sourceTree = "<group>"; };
+		9AB710FA27A5AD0C005F15F6 /* TrainingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingDetailView.swift; sourceTree = "<group>"; };
+		9AB710FC27A5C7FE005F15F6 /* CompleteTrainingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteTrainingDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				9AB710CA27A4C049005F15F6 /* Extensions.swift */,
+				9AB710E027A57F04005F15F6 /* Constant.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -126,6 +155,10 @@
 				9A31149927A35D1300143C49 /* EmailSignInComponent.swift */,
 				9AB710C527A4B2CC005F15F6 /* SignUpFieldComponent.swift */,
 				9AB710D227A4E3DF005F15F6 /* AthleteRowComponent.swift */,
+				9AB710E227A58073005F15F6 /* AnnouncementListComponent.swift */,
+				9AB710E827A58598005F15F6 /* PracticeListComponent.swift */,
+				9AB710F427A593C2005F15F6 /* RaceListComponent.swift */,
+				9AB710F827A5A4F0005F15F6 /* TrainingListComponent.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -138,6 +171,12 @@
 				9A3114A727A4529B00143C49 /* MyAtlasView.swift */,
 				9AB710CC27A4C435005F15F6 /* AthleteMyAtlasView.swift */,
 				9AB710CE27A4C450005F15F6 /* CoachMyAtlasView.swift */,
+				9AB710EA27A58A59005F15F6 /* NewAnnouncementSheetView.swift */,
+				9AB710EE27A58A79005F15F6 /* NewPracticeSheetView.swift */,
+				9AB710F027A58A7F005F15F6 /* NewRaceSheetView.swift */,
+				9AB710F227A58A88005F15F6 /* NewTrainingSheetView.swift */,
+				9AB710FA27A5AD0C005F15F6 /* TrainingDetailView.swift */,
+				9AB710FC27A5C7FE005F15F6 /* CompleteTrainingDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -165,6 +204,9 @@
 			children = (
 				9AB710C827A4BA70005F15F6 /* Team.swift */,
 				9AB710D027A4E302005F15F6 /* Athlete.swift */,
+				9AB710E427A5820B005F15F6 /* Practice.swift */,
+				9AB710E627A58210005F15F6 /* Race.swift */,
+				9AB710F627A5A3E4005F15F6 /* Training.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -239,23 +281,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AB710E727A58210005F15F6 /* Race.swift in Sources */,
+				9AB710E327A58073005F15F6 /* AnnouncementListComponent.swift in Sources */,
 				9A31149A27A35D1400143C49 /* EmailSignInComponent.swift in Sources */,
 				9AB710CD27A4C435005F15F6 /* AthleteMyAtlasView.swift in Sources */,
+				9AB710F327A58A88005F15F6 /* NewTrainingSheetView.swift in Sources */,
+				9AB710F127A58A7F005F15F6 /* NewRaceSheetView.swift in Sources */,
 				9A31147E27A3450000143C49 /* Persistence.swift in Sources */,
 				9AB710C927A4BA70005F15F6 /* Team.swift in Sources */,
+				9AB710F527A593C2005F15F6 /* RaceListComponent.swift in Sources */,
 				9AB710C627A4B2CD005F15F6 /* SignUpFieldComponent.swift in Sources */,
 				9AB710CF27A4C450005F15F6 /* CoachMyAtlasView.swift in Sources */,
+				9AB710F927A5A4F0005F15F6 /* TrainingListComponent.swift in Sources */,
 				9A31147727A344FE00143C49 /* ContentView.swift in Sources */,
+				9AB710FB27A5AD0C005F15F6 /* TrainingDetailView.swift in Sources */,
 				9A31148127A3450000143C49 /* AtlasTeam.xcdatamodeld in Sources */,
+				9AB710E527A5820B005F15F6 /* Practice.swift in Sources */,
+				9AB710E127A57F04005F15F6 /* Constant.swift in Sources */,
+				9AB710FD27A5C7FE005F15F6 /* CompleteTrainingDetailView.swift in Sources */,
 				9A3114A427A44B2B00143C49 /* CreateTeamView.swift in Sources */,
+				9AB710EF27A58A79005F15F6 /* NewPracticeSheetView.swift in Sources */,
+				9AB710E927A58598005F15F6 /* PracticeListComponent.swift in Sources */,
 				9A3114A627A44B3700143C49 /* JoinTeamView.swift in Sources */,
 				9A31147527A344FE00143C49 /* AtlasTeamApp.swift in Sources */,
 				9A31149827A34D5E00143C49 /* LogInComponent.swift in Sources */,
 				9A31149427A3465600143C49 /* AuthenticationView.swift in Sources */,
+				9AB710EB27A58A59005F15F6 /* NewAnnouncementSheetView.swift in Sources */,
 				9A31149627A34D5700143C49 /* SignUpComponent.swift in Sources */,
 				9AB710D127A4E302005F15F6 /* Athlete.swift in Sources */,
 				9A3114A827A4529B00143C49 /* MyAtlasView.swift in Sources */,
 				9AB710D327A4E3DF005F15F6 /* AthleteRowComponent.swift in Sources */,
+				9AB710F727A5A3E4005F15F6 /* Training.swift in Sources */,
 				9AB710CB27A4C049005F15F6 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

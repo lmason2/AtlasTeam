@@ -9,10 +9,40 @@ import SwiftUI
 import CloudKit
 
 struct CoachMyAtlasView: View {
+    // MARK: - PROPERTIES
     let myTeam: Team
     @State var athletesLoaded: Bool = false
     @State var athletes: [Athlete] = []
     
+    @State var upcomingPracticesLoaded: Bool = false
+    @State var upcomingPractices: [Practice] = []
+    
+    @State var upcomingRacesLoaded: Bool = false
+    @State var upcomingRaces: [Race] = []
+    
+    @State var myTrainingLoaded: Bool = false
+    @State var addAnnouncementSheet: Bool = false
+    @State var addPracticeSheet: Bool = false
+    @State var addRaceSheet: Bool = false
+    @State var addTrainingSheet: Bool = false
+    
+    func getPractices() {
+        // query for practices
+        upcomingPracticesLoaded = true
+    }
+    
+    func getRaces() {
+        // query for races
+        upcomingRacesLoaded = true
+    }
+    
+    func getTraining() {
+        // query for training
+        myTrainingLoaded = true
+    }
+    
+    
+    // MARK: - FUNCTIONS
     func getAthletes() {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         var recordIDs: [CKRecord.ID] = []
@@ -28,7 +58,7 @@ struct CoachMyAtlasView: View {
                 for i in 0..<recordIDs.count {
                     do {
                         let record = try results[recordIDs[i]]?.get()
-                        let name = record?.value(forKey: "email") as! String
+                        let name = record?.value(forKey: "username") as! String
                         let mileage = 60
                         athletes.append(Athlete(name: name, mileage: mileage))
                     }
@@ -45,6 +75,7 @@ struct CoachMyAtlasView: View {
         }
     }
     
+    // MARK: - BODY
     var body: some View {
         VStack{
             VStack {
@@ -59,9 +90,12 @@ struct CoachMyAtlasView: View {
                 Divider()
                 if athletesLoaded {
                     ScrollView(.horizontal) {
-                        ForEach(0..<athletes.count) {index in
-                            AthleteRowComponent(athlete: athletes[index], primaryColor: Color(myTeam.primaryColor))
+                        HStack {
+                            ForEach(0..<athletes.count) {index in
+                                AthleteRowComponent(athlete: athletes[index], primaryColor: Color(myTeam.primaryColor))
+                            }
                         }
+                        .padding(.bottom, 10)
                     }
                     .padding()
                 }
@@ -69,6 +103,7 @@ struct CoachMyAtlasView: View {
                     ProgressView().onAppear {
                         getAthletes()
                     }
+                    .padding(.bottom, 10)
                 }
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
@@ -85,7 +120,7 @@ struct CoachMyAtlasView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
                     Button(action: {
-                        print("adding training")
+                        addAnnouncementSheet = true
                     }, label: {
                         Image(systemName: "plus.circle")
                             .foregroundColor(Color(myTeam.secondaryColor))
@@ -93,10 +128,18 @@ struct CoachMyAtlasView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
+                .sheet(isPresented: $addAnnouncementSheet) {
+                    NewAnnouncementSheetView()
+                }
                 Divider()
+                
                 ScrollView(.horizontal) {
-                    Text("text")
-                    Text("text")
+                    HStack {
+                        ForEach(myTeam.announcements, id: \.self) {announcement in
+                            AnnouncementListComponent(announcement: announcement, primaryColor: Color(myTeam.primaryColor))
+                        }
+                    }
+                    .padding(.bottom, 10)
                 }
                 .padding()
             }
@@ -114,7 +157,7 @@ struct CoachMyAtlasView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
                     Button(action: {
-                        print("adding training")
+                        addPracticeSheet = true
                     }, label: {
                         Image(systemName: "plus.circle")
                             .foregroundColor(Color(myTeam.secondaryColor))
@@ -122,12 +165,27 @@ struct CoachMyAtlasView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
-                Divider()
-                ScrollView(.horizontal) {
-                    Text("text")
-                    Text("text")
+                .sheet(isPresented: $addPracticeSheet) {
+                    NewPracticeSheetView()
                 }
-                .padding()
+                
+                Divider()
+                if upcomingPracticesLoaded {
+                    ScrollView(.horizontal) {
+                        HStack {
+                            ForEach(0..<upcomingPractices.count) {index in
+                                PracticeListComponent(practice: upcomingPractices[index], secondaryColor: Color(myTeam.secondaryColor))
+                            }
+                        }
+                    }
+                    .padding()
+                }
+                else {
+                    ProgressView().onAppear {
+                        getPractices()
+                    }
+                    .padding(.bottom, 10)
+                }
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
             .background(Color(UIColor.systemGray6))
@@ -143,7 +201,7 @@ struct CoachMyAtlasView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
                     Button(action: {
-                        print("adding training")
+                        addRaceSheet = true
                     }, label: {
                         Image(systemName: "plus.circle")
                             .foregroundColor(Color(myTeam.secondaryColor))
@@ -151,12 +209,27 @@ struct CoachMyAtlasView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
-                Divider()
-                ScrollView(.horizontal) {
-                    Text("text")
-                    Text("text")
+                .sheet(isPresented: $addRaceSheet) {
+                    NewRaceSheetView()
                 }
-                .padding()
+                
+                Divider()
+                if upcomingRacesLoaded {
+                    ScrollView(.horizontal) {
+                        HStack {
+                            ForEach(0..<upcomingRaces.count) {index in
+                                RaceListComponent(race: upcomingRaces[index], secondaryColor: Color(myTeam.secondaryColor))
+                            }
+                        }
+                    }
+                    .padding()
+                }
+                else {
+                    ProgressView().onAppear {
+                        getRaces()
+                    }
+                    .padding(.bottom, 10)
+                }
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
             .background(Color(UIColor.systemGray6))
@@ -172,7 +245,7 @@ struct CoachMyAtlasView: View {
                     .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
                     Button(action: {
-                        print("adding training")
+                        addTrainingSheet = true
                     }, label: {
                         Image(systemName: "plus.circle")
                             .foregroundColor(Color(myTeam.secondaryColor))
@@ -180,12 +253,24 @@ struct CoachMyAtlasView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
-                Divider()
-                ScrollView(.horizontal) {
-                    Text("text")
-                    Text("text")
+                .sheet(isPresented: $addTrainingSheet) {
+                    NewTrainingSheetView(primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor), trainingType: .easy, additionalInfo: "")
                 }
-                .padding()
+                
+                Divider()
+                if myTrainingLoaded {
+                    ScrollView(.horizontal) {
+                        Text("text")
+                        Text("text")
+                    }
+                    .padding()
+                }
+                else {
+                    ProgressView().onAppear {
+                        
+                    }
+                    .padding(.bottom, 10)
+                }
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
             .background(Color(UIColor.systemGray6))

@@ -28,6 +28,12 @@ let practiceDateFormatter: DateFormatter = {
     return formatter
 }()
 
+let completeTrainingDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "MM/dd/yy"
+    return formatter
+}()
+
 let raceDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
@@ -65,7 +71,7 @@ func getTrainingTypeString(_ type: TrainingType) -> String {
     }
 }
 
-func getNumberOfWeeks(_ training: [Training]) -> Int {
+func getNumberOfWeeks(training: [Training], weekStartsOnMonday: Bool) -> Int {
     for i in (0..<training.count) {
         print(training[i].date)
     }
@@ -86,6 +92,21 @@ func getTrainingTypeFromString(_ typeString: String) -> TrainingType {
             return .race
         default:
             return .easy
+    }
+}
+
+func getTypeColor(_ type: TrainingType) -> Color {
+    switch type {
+    case .easy:
+        return Color.teal
+    case .workout:
+        return Color.red
+    case .mediumLong:
+        return Color.mint
+    case .long:
+        return Color.purple
+    case .race:
+        return Color.yellow
     }
 }
 

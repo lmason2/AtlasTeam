@@ -14,12 +14,33 @@ struct Training {
     let minutes: Double?
     let rating: Int
     let info: String
+    var raceDistance: String?
+    var raceTime: String?
     var mileageString: String {
-        let rounded = round(mileage * 100 / 100.00)
+        let rounded = round(mileage * 100) / 100.0
         return String(rounded)
     }
+    var minutesString: String {
+        if minutes != nil {
+            return String(Int(minutes!))
+        }
+        return "N/A"
+    }
     var paceString: String {
-        return ""
+        if minutes == nil {
+            return "N/A"
+        }
+        else {
+            let minutesPerMileDecimal = minutes! / mileage
+            let minutesPerMile = Int(minutesPerMileDecimal)
+            let decimal = minutesPerMileDecimal - Double(minutesPerMile)
+            let seconds = Int(decimal * 60)
+            var secondsString = String(seconds)
+            if seconds < 10 {
+                secondsString = "0" + secondsString
+            }
+            return String(minutesPerMile) + ":" + secondsString
+        }
     }
 }
 

@@ -28,11 +28,15 @@ struct AthleteMyAtlasView: View {
     @State var addTrainingSheet: Bool = false
     @State var expandTraining: Bool = false
     
+    @State var filteredTraining: [Training] = []
+    
+    let userID = UserDefaults.standard.string(forKey: "userID")
+    let username = UserDefaults.standard.string(forKey: "username")
+    
     func getPractices() {
         // query for practices
         let publicDatabase = CKContainer.default().publicCloudDatabase
         var recordIDs: [CKRecord.ID] = []
-        print("count - ", myTeam.practices.count)
         for i in 0..<myTeam.practices.count {
             recordIDs.append(myTeam.practices[i].recordID)
         }
@@ -56,7 +60,7 @@ struct AthleteMyAtlasView: View {
                         print("error")
                     }
                 }
-                upcomingPractices.sort(){$0.timestamp > $1.timestamp}
+                upcomingPractices.sort(){$0.timestamp < $1.timestamp}
                 upcomingPracticesLoaded = true
             }
             catch {
@@ -105,61 +109,120 @@ struct AthleteMyAtlasView: View {
     
     func getTraining() {
         // query for training
-        myTraining = [
-            Training(date: Date(), type: .easy, mileage: 10.0, minutes: 70, rating: 8, info: "Additional"),
-            Training(date: Date(), type: .workout, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-            Training(date: Date(), type: .race, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-            Training(date: Date(), type: .mediumLong, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-            Training(date: Date(), type: .long, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-        ]
-        myTrainingLoaded = true
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        publicDatabase.fetch(withRecordID: CKRecord.ID(recordName: userID!)) { (fetched, error) in
+            if error == nil {
+                let trainingRecords = fetched?.value(forKey: "activities") as? [CKRecord.Reference] ?? []
+                var recordIDs: [CKRecord.ID] = []
+                for i in 0..<trainingRecords.count {
+                    recordIDs.append(trainingRecords[i].recordID)
+                }
+                publicDatabase.fetch(withRecordIDs: recordIDs) { result in
+                    do {
+                        // Create audio player object
+                        let results = try result.get()
+                                
+                        print(results)
+                        for i in 0..<recordIDs.count {
+                            do {
+                                let record = try results[recordIDs[i]]?.get()
+                                let additionalInfo = record?.value(forKey: "additionalInfo") as? String ?? ""
+                                let date = record?.value(forKey: "date") as? Date ?? Date()
+                                let mileage = record?.value(forKey: "mileage") as? Double ?? 0.00
+                                let minutes = record?.value(forKey: "minutes") as? Double ?? 0.00
+                                let typeString = record?.value(forKey: "type") as? String ?? "Easy"
+                                let type = getTrainingTypeFromString(typeString)
+                                var raceDistance = ""
+                                var raceTime = ""
+                                if type == .race {
+                                    raceDistance = record?.value(forKey: "raceDistance") as? String ?? ""
+                                    raceTime = record?.value(forKey: "raceTime") as? String ?? ""
+                                }
+                                let rating = record?.value(forKey: "rating") as? Int ?? 5
+                                let training = Training(date: date, type: type, mileage: mileage, minutes: minutes, rating: rating, info: additionalInfo, raceDistance: raceDistance, raceTime: raceTime)
+                                myTraining.append(training)
+                                
+                            }
+                            catch {
+                                print("error")
+                            }
+                        }
+                        myTraining.sort(){$0.date > $1.date}
+                        var mostRecentStartToWeek: Date = Date()
+                        let newestDate = Date()
+                        for i in 0..<7 {
+                            let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
+                            if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (myTeam.weekStartsOnMonday ? 1 : 7) {
+                                mostRecentStartToWeek = dateToCheck
+                                break
+                            }
+                        }
+                        filteredTraining = myTraining.compactMap({ $0 as Training }).filter { $0.date >= mostRecentStartToWeek }
+                        myTrainingLoaded = true
+                    }
+                    catch {
+                        // Couldn't create audio player object, log the error
+                        print("Error")
+                    }
+                }
+            }
+            else {
+                print("error")
+                print(error)
+            }
+        }
     }
     
     func sumMileage() -> String {
-        return "30"
+        var sum = 0.00
+        for i in 0..<filteredTraining.count {
+            sum += filteredTraining[i].mileage
+        }
+        return String(sum)
     }
     
     var body: some View {
         VStack{
             VStack {
                 HStack(spacing: 5) {
-                    Text("My Training")
+                    Text("This Week")
                         .foregroundColor(Color(myTeam.secondaryColor))
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
-                    HStack (spacing: 2) {
-                        Text("Mileage:")
-                            .foregroundColor(Color(myTeam.secondaryColor))
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        Text(sumMileage())
-                            .foregroundColor(Color(myTeam.secondaryColor))
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    }
-                    .padding(.vertical, 2)
-                    .padding(.horizontal, 4)
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 1))
-                   
-                    Button(action: {
-                        addTrainingSheet = true
-                    }, label: {
-                        Image(systemName: "plus.circle")
-                            .foregroundColor(Color(myTeam.secondaryColor))
-                    })
-                    
-                    Button(action: {
-                        expandTraining = true
-                    }, label: {
-                        Image(systemName: "line.3.horizontal.circle")
-                            .foregroundColor(Color(myTeam.secondaryColor))
-                    })
-                    .sheet(isPresented: $expandTraining) {
-                        CompleteTrainingDetailView(training: myTraining)
+                    if myTrainingLoaded {
+                        HStack (spacing: 2) {
+                            Text("Mileage:")
+                                .foregroundColor(Color(myTeam.secondaryColor))
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                            Text(sumMileage())
+                                .foregroundColor(Color(myTeam.secondaryColor))
+                                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        }
+                        .padding(.vertical, 2)
+                        .padding(.horizontal, 4)
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 1))
+                       
+                        Button(action: {
+                            addTrainingSheet = true
+                        }, label: {
+                            Image(systemName: "plus.circle")
+                                .foregroundColor(Color(myTeam.secondaryColor))
+                        })
+                        
+                        Button(action: {
+                        }, label: {
+                            NavigationLink(destination: CompleteTrainingDetailView(training: myTraining, weekStartsOnMonday: myTeam.weekStartsOnMonday, username: username!, primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor)), label: {
+                                Image(systemName: "line.3.horizontal.circle")
+                                    .foregroundColor(Color(myTeam.secondaryColor))
+                            })
+                            
+                        })
                     }
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
                 .sheet(isPresented: $addTrainingSheet) {
-                    NewTrainingSheetView(primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor), trainingType: .easy, additionalInfo: "")
+                    NewTrainingSheetView(primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor), trainingType: .easy, additionalInfo: "", myTrainingLoaded: $myTrainingLoaded, displayingThisSheet: $addTrainingSheet, myTrainings: $myTraining)
                         .background(LinearGradient(gradient: Gradient(colors: [Color(myTeam.primaryColor).opacity(0.3), Color(myTeam.secondaryColor).opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
                 
@@ -167,17 +230,17 @@ struct AthleteMyAtlasView: View {
                 if myTrainingLoaded {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(0..<myTraining.count) {index in
-                                NavigationLink(destination: TrainingDetailView(training: myTraining[index])) {
-                                    TrainingListComponent(training: myTraining[index])
+                            ForEach(0..<filteredTraining.count) {index in
+                                NavigationLink(destination: TrainingDetailView(training: filteredTraining.reversed()[index])) {
+                                    TrainingListComponent(training: filteredTraining.reversed()[index])
                                 }
                                 .tint(Color.black)
                             }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
                     }
-                    .padding(.top, 10)
-                    .padding(.bottom, 20)
-                    .padding(.leading, 10)
+                    .padding(.vertical)
                 }
                 else {
                     ProgressView().onAppear {
@@ -210,9 +273,10 @@ struct AthleteMyAtlasView: View {
                             AnnouncementListComponent(announcement: announcement, primaryColor: Color(myTeam.primaryColor))
                         }
                     }
+                    .padding(.horizontal, 20)
                     .padding(.bottom, 10)
                 }
-                .padding()
+                .padding(.vertical)
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
             .background(Color(UIColor.systemGray6))
@@ -233,14 +297,16 @@ struct AthleteMyAtlasView: View {
                 
                 Divider()
                 if upcomingPracticesLoaded {
-                    ScrollView(.horizontal) {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(0..<upcomingPractices.count) {index in
                                 PracticeListComponent(practice: upcomingPractices[index], secondaryColor: Color(myTeam.secondaryColor))
                             }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
                     }
-                    .padding()
+                    .padding(.vertical)
                 }
                 else {
                     ProgressView().onAppear {
@@ -268,14 +334,16 @@ struct AthleteMyAtlasView: View {
                 
                 Divider()
                 if upcomingRacesLoaded {
-                    ScrollView(.horizontal) {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(0..<upcomingRaces.count) {index in
                                 RaceListComponent(race: upcomingRaces[index], secondaryColor: Color(myTeam.secondaryColor))
                             }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
                     }
-                    .padding()
+                    .padding(.vertical)
                 }
                 else {
                     ProgressView().onAppear {

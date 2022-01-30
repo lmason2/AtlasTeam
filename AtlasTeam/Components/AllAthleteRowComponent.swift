@@ -1,15 +1,14 @@
 //
-//  AthleteRowComponent.swift
+//  AllAthleteRowComponent.swift
 //  AtlasTeam
 //
-//  Created by Luke Mason on 1/28/22.
+//  Created by Luke Mason on 1/30/22.
 //
 
 import SwiftUI
 
-struct AthleteRowComponent: View {
+struct AllAthleteRowComponent: View {
     let athlete: Athlete
-    let primaryColor: Color
     let weekStartsOnMonday: Bool
     
     var stats: [Double] {
@@ -36,36 +35,38 @@ struct AthleteRowComponent: View {
         }
         return [sum, ratingAvg/Double(filteredTraining.count)]
     }
-    
     var body: some View {
-        VStack {
+        HStack {
             Text(athlete.username)
-                .font(.system(size: 16, weight: .ultraLight, design: .rounded))
+                .font(.system(size: 20, weight: .semibold, design: .rounded))
+            Spacer()
             Divider()
             HStack {
-                VStack {
-                    Text("Mileage")
-                        .font(.system(size: 16, weight: .ultraLight, design: .rounded))
-                    Text("Avg. Rating")
-                        .font(.system(size: 16, weight: .ultraLight, design: .rounded))
+                HStack{
+                    Spacer()
+                    Text("\(stats[0], specifier: "%.2f")")
+                        .font(.system(size: 16, weight: .medium, design: .rounded))
+                        .frame(width: 65, alignment: .center)
+                    Spacer()
                 }
                 Divider()
-                VStack {
-                    Text("\(stats[0], specifier: "%.1f")")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    Text("\(stats[1], specifier: "%.1f")")
-                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                HStack {
+                    Spacer()
+                    Text("\(stats[1], specifier: "%.2f")")
+                        .font(.system(size: 16, weight: .medium, design: .rounded))
+                        .frame(width: 65, alignment: .center)
+                    Spacer()
                 }
             }
-           
-            Spacer()
+            .frame(width: 150)
         }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 5)
-        .frame(width: 150, height: 150)
-        .background(
-            LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.2), primaryColor.opacity(0.7)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-        )
-        .cornerRadius(5)
+    }
+}
+
+struct AllAthleteRowComponent_Previews: PreviewProvider {
+    static var athlete: Athlete = Athlete(username: "Username", email: "email", activityRecords: [], activitiesUnwrapped: [Training(date: Date(), type: .long, mileage: 18, minutes: nil, rating: 10, info: "Long run", raceDistance: nil, raceTime: nil)])
+    static var previews: some View {
+        AllAthleteRowComponent(athlete: athlete, weekStartsOnMonday: true)
+            .previewLayout(.sizeThatFits)
     }
 }

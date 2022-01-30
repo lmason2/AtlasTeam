@@ -33,7 +33,7 @@ struct TrainingDetailView: View {
                             .font(.system(size: 17, weight: .semibold, design: .rounded))
                         Group {
                             HStack {
-                                Text("\(training.minutes ?? 0.00)")
+                                Text(training.minutesString)
                                     .font(.system(size: 15, weight: .semibold, design: .rounded))
                             }
                             .padding()

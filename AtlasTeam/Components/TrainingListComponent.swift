@@ -33,7 +33,7 @@ struct TrainingListComponent: View {
                     Text(training.mileageString)
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                         .frame(height: 25, alignment: .center)
-                    Text("5:50")
+                    Text(training.paceString)
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                         .frame(height: 25, alignment: .center)
                     Text("\(training.rating)")

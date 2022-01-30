@@ -65,4 +65,28 @@ func getTrainingTypeString(_ type: TrainingType) -> String {
     }
 }
 
+func getNumberOfWeeks(_ training: [Training]) -> Int {
+    for i in (0..<training.count) {
+        print(training[i].date)
+    }
+    return 7
+}
+
+func getTrainingTypeFromString(_ typeString: String) -> TrainingType {
+    switch typeString {
+        case "Easy":
+            return .easy
+        case "Workout":
+            return .workout
+        case "Medium Long Run":
+            return .mediumLong
+        case "Long Run":
+            return .long
+        case "Race":
+            return .race
+        default:
+            return .easy
+    }
+}
+
 let feedback = UINotificationFeedbackGenerator()

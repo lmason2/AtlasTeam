@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import CloudKit
 
 struct Athlete {
-    let name: String
-    let mileage: Int
+    let username: String
+    let email: String
+    let activityRecords: [CKRecord.Reference]
+    var activitiesUnwrapped: [Training]
 }

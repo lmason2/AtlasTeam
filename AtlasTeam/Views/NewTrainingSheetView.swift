@@ -26,6 +26,7 @@ struct NewTrainingSheetView: View {
         VStack {
             Text("New Training")
                 .font(.system(size: 32, weight: .semibold, design: .rounded))
+                .padding(.top, 20)
             Divider()
             
             ScrollView(.vertical, showsIndicators: false) {
@@ -37,7 +38,6 @@ struct NewTrainingSheetView: View {
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                             Spacer()
                         }
-                        .padding(.top, 15)
                         .padding(.horizontal, 10)
                         
                         Divider()
@@ -134,7 +134,7 @@ struct NewTrainingSheetView: View {
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                             Spacer()
                         }
-                        .padding(.top, 24)
+                        .padding(.top, 16)
                         .padding(.horizontal, 10)
                         
                         Divider()
@@ -145,7 +145,7 @@ struct NewTrainingSheetView: View {
                         )
                         .keyboardType(.decimalPad)
                         .padding(.horizontal, 10)
-                        .padding(.vertical, 7)
+                        .padding(.vertical, 10)
                         .focused($mileageIsFocused)
                         
                         Divider()
@@ -155,14 +155,13 @@ struct NewTrainingSheetView: View {
                         )
                         .keyboardType(.numberPad)
                         .padding(.horizontal, 10)
-                        .padding(.vertical, 7)
+                        .padding(.vertical, 10)
                         .focused($minutesIsFocused)
                         
                         Spacer()
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.30, height: 175)
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 3))
-                    .padding(.top, 2)
                 }
                 .padding(.top, 10)
                 Slider(
@@ -179,7 +178,9 @@ struct NewTrainingSheetView: View {
                     isEditing = editing
                 }
                 .tint(Color.black)
+                .padding(.horizontal, 5)
                 Text("Rating: \(Int(rating))")
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
                 
                 if trainingType == .race {
                     VStack {
@@ -202,6 +203,7 @@ struct NewTrainingSheetView: View {
                             text: $raceTime
                         )
                         .padding()
+                        .padding(.bottom, 15)
                     }
                     .transition(.slide)
                     .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 3))
@@ -228,22 +230,23 @@ struct NewTrainingSheetView: View {
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                Spacer()
             }
             .offset(y: additionalInfoIsFocused ? -100 : 0)
+            .padding(.horizontal, 5)
+            .frame(width: UIScreen.main.bounds.width * 0.9)
             
             Divider()
             Button(action: {
                 print("Saving")
             }, label: {
                 Text("Save")
+                    .foregroundColor(Color.black)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
             })
+            .background(Capsule().stroke(Color.black, lineWidth: 3))
+            .padding(.vertical, 10)
         }
-        .padding(.horizontal, 5)
-        .padding(.top, 20)
-        .padding(.bottom, 20)
-        .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height * 0.85)
-        .background(LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.3), secondaryColor.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
         .cornerRadius(10)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)

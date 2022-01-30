@@ -23,6 +23,7 @@ struct Team {
     var announcements: [String]
     var practices: [CKRecord.Reference]
     var races: [CKRecord.Reference]
+    var weekStartsOnMonday: Bool
     var primaryColor: UIColor {
         UIColor(hex: primaryString)!
     }

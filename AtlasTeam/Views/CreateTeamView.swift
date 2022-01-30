@@ -15,6 +15,7 @@ struct CreateTeamView: View {
     @State var state: String = ""
     @State var password: String = ""
     @State var confirmPassword: String = ""
+    @State var weekStartsOnMonday: Bool = true
     @State var primaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
     @State var secondaryColor = Color(.sRGB, red: 0, green: 0, blue: 0)
     @State var showAlert: Bool = false
@@ -64,6 +65,7 @@ struct CreateTeamView: View {
                         record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
                         record["primaryColor"] = primaryColorString ?? UIColor(Color.accentColor).toHex!
                         record["secondaryColor"] = secondaryColorString ?? UIColor(Color("Blue")).toHex!
+                        record["startsOnMonday"] = weekStartsOnMonday ? Int64(1) : Int64(0)
 
                         publicDatabase.save(record) { recordResult, error in
                             if error == nil {
@@ -106,6 +108,7 @@ struct CreateTeamView: View {
                 )
                 .foregroundColor(Color.accentColor)
                 .autocapitalization(.words)
+                .disableAutocorrection(false)
                 
                 TextField(
                     "City",
@@ -113,6 +116,7 @@ struct CreateTeamView: View {
                 )
                 .foregroundColor(Color.accentColor)
                 .autocapitalization(.words)
+                .disableAutocorrection(false)
                 
                 TextField(
                     "State",
@@ -120,7 +124,32 @@ struct CreateTeamView: View {
                 )
                 .foregroundColor(Color.accentColor)
                 .autocapitalization(.words)
+                .disableAutocorrection(false)
             } //: SECTION
+            
+            Section("Week Starts On") {
+                Button(action: {
+                    print("here")
+                    weekStartsOnMonday = false
+                }, label: {
+                    Text("Sunday")
+                        .foregroundColor(weekStartsOnMonday ? Color.accentColor : Color.white)
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 20)
+                })
+                .background(Capsule().strokeBorder(Color.accentColor).background(Capsule().fill(weekStartsOnMonday ? Color.clear : Color.accentColor)))
+                Button(action: {
+                    weekStartsOnMonday = true
+                }, label: {
+                    Text("Monday")
+                        .foregroundColor(weekStartsOnMonday ? Color.white : Color.accentColor)
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 20)
+                })
+                .background(Capsule().strokeBorder(Color.accentColor).background(Capsule().fill(weekStartsOnMonday ? Color.accentColor : Color.clear)))
+            }
             
             Section("Colors") {
                 VStack{

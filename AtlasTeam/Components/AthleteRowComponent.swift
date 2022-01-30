@@ -11,9 +11,13 @@ struct AthleteRowComponent: View {
     let athlete: Athlete
     let primaryColor: Color
     
+    func getWeeklyMileage(_ activities: [Training]) -> Double {
+        return round(60.00)
+    }
+    
     var body: some View {
         VStack {
-            Text(athlete.name)
+            Text(athlete.username)
                 .font(.system(size: 16, weight: .ultraLight, design: .rounded))
             Divider()
             HStack {
@@ -25,7 +29,7 @@ struct AthleteRowComponent: View {
                 }
                 Divider()
                 VStack {
-                    Text("\(athlete.mileage)")
+                    Text("\(getWeeklyMileage(athlete.activitiesUnwrapped), specifier: "%.2f")")
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
                     Text("\(4)")
                         .font(.system(size: 16, weight: .semibold, design: .rounded))
@@ -41,12 +45,5 @@ struct AthleteRowComponent: View {
             LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.2), primaryColor.opacity(0.7)]), startPoint: .topLeading, endPoint: .bottomTrailing)
         )
         .cornerRadius(5)
-    }
-}
-
-struct AthleteRowComponent_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        AthleteRowComponent(athlete: Athlete(name: "Luke Mason", mileage: 80), primaryColor: Color("Blue"))
     }
 }

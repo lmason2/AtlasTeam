@@ -44,7 +44,8 @@ struct ContentView: View {
             let announcements = teamRecord.value(forKey: "announcements") as? [String] ?? []
             let practices = teamRecord.value(forKey: "practices") as? [CKRecord.Reference] ?? []
             let races = teamRecord.value(forKey: "races") as? [CKRecord.Reference] ?? []
-            myTeam = Team(assistantCoaches: assistants, athletes: athletes, coach: coach, city: city, state: state, name: name, password: "", trainers: trainers, primaryString: primaryString, secondaryString: secondaryString, announcements: announcements, practices: practices, races: races)
+            let weekStartsOnMonday = teamRecord.value(forKey: "startsOnMonday") as? Int64 ?? Int64(1)
+            myTeam = Team(assistantCoaches: assistants, athletes: athletes, coach: coach, city: city, state: state, name: name, password: "", trainers: trainers, primaryString: primaryString, secondaryString: secondaryString, announcements: announcements, practices: practices, races: races, weekStartsOnMonday: (weekStartsOnMonday != 0))
             
             dataLoaded = true
         }

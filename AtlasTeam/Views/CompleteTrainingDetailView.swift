@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct CompleteTrainingDetailView: View {
+    let training: [Training]
     var body: some View {
         List {
-            ForEach(0..<5) { _ in
+            ForEach(0..<getNumberOfWeeks(training)) { _ in
                 Text("test")
             }
         }
@@ -18,7 +19,14 @@ struct CompleteTrainingDetailView: View {
 }
 
 struct CompeteTrainingDetailView_Previews: PreviewProvider {
+    static let myTraining = [
+        Training(date: Date(), type: .easy, mileage: 10.0, minutes: 70, rating: 8, info: "Additional"),
+        Training(date: Date(), type: .workout, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
+        Training(date: Date(), type: .race, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
+        Training(date: Date(), type: .mediumLong, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
+        Training(date: Date(), type: .long, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
+    ]
     static var previews: some View {
-        CompleteTrainingDetailView()
+        CompleteTrainingDetailView(training: myTraining)
     }
 }

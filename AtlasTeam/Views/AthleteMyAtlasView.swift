@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct AthleteMyAtlasView: View {
     let myTeam: Team
@@ -29,12 +30,77 @@ struct AthleteMyAtlasView: View {
     
     func getPractices() {
         // query for practices
-        upcomingPracticesLoaded = true
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        var recordIDs: [CKRecord.ID] = []
+        print("count - ", myTeam.practices.count)
+        for i in 0..<myTeam.practices.count {
+            recordIDs.append(myTeam.practices[i].recordID)
+        }
+        publicDatabase.fetch(withRecordIDs: recordIDs) { result in
+            do {
+                // Create audio player object
+                let results = try result.get()
+                        
+                for i in 0..<recordIDs.count {
+                    do {
+                        let record = try results[recordIDs[i]]?.get()
+                        let timestamp = record?.value(forKey: "date") as! Date
+                        if timestamp >= Date() {
+                            let location = record?.value(forKey: "location") as! String
+                            let additionalInfo = record?.value(forKey: "additionalInfo") as! String
+                            upcomingPractices.append(Practice(timestamp: timestamp, location: location, additionalInfo: additionalInfo))
+                        }
+                        
+                    }
+                    catch {
+                        print("error")
+                    }
+                }
+                upcomingPractices.sort(){$0.timestamp > $1.timestamp}
+                upcomingPracticesLoaded = true
+            }
+            catch {
+                // Couldn't create audio player object, log the error
+                print("Error")
+            }
+        }
     }
     
     func getRaces() {
         // query for races
-        upcomingRacesLoaded = true
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        var recordIDs: [CKRecord.ID] = []
+        for i in 0..<myTeam.races.count {
+            recordIDs.append(myTeam.races[i].recordID)
+        }
+        publicDatabase.fetch(withRecordIDs: recordIDs) { result in
+            do {
+                // Create audio player object
+                let results = try result.get()
+                        
+                for i in 0..<recordIDs.count {
+                    do {
+                        let record = try results[recordIDs[i]]?.get()
+                        let date = record?.value(forKey: "date") as! Date
+                        if date >= Date() {
+                            let name = record?.value(forKey: "name") as! String
+                            let location = record?.value(forKey: "location") as! String
+                            let additionalInfo = record?.value(forKey: "additionalInfo") as! String
+                            upcomingRaces.append(Race(date: date, name: name, location: location, additionalInfo: additionalInfo))
+                        }
+                        
+                    }
+                    catch {
+                        print("error")
+                    }
+                }
+                upcomingRacesLoaded = true
+            }
+            catch {
+                // Couldn't create audio player object, log the error
+                print("Error")
+            }
+        }
     }
     
     func getTraining() {
@@ -56,29 +122,30 @@ struct AthleteMyAtlasView: View {
     var body: some View {
         VStack{
             VStack {
-                HStack(spacing: 0) {
+                HStack(spacing: 5) {
                     Text("My Training")
                         .foregroundColor(Color(myTeam.secondaryColor))
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
-                    Text("Mileage:")
-                        .foregroundColor(Color(myTeam.secondaryColor))
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .padding(.trailing, 0)
-                        .frame(alignment: .trailing)
-                    Text(sumMileage())
-                        .foregroundColor(Color(myTeam.secondaryColor))
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .padding(.leading, 3)
-                        .padding(.trailing, 5)
-                        .frame(alignment: .leading)
+                    HStack (spacing: 2) {
+                        Text("Mileage:")
+                            .foregroundColor(Color(myTeam.secondaryColor))
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        Text(sumMileage())
+                            .foregroundColor(Color(myTeam.secondaryColor))
+                            .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    }
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 4)
+                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 1))
+                   
                     Button(action: {
                         addTrainingSheet = true
                     }, label: {
                         Image(systemName: "plus.circle")
                             .foregroundColor(Color(myTeam.secondaryColor))
                     })
-                    .padding(.trailing, 5)
+                    
                     Button(action: {
                         expandTraining = true
                     }, label: {
@@ -86,18 +153,19 @@ struct AthleteMyAtlasView: View {
                             .foregroundColor(Color(myTeam.secondaryColor))
                     })
                     .sheet(isPresented: $expandTraining) {
-                        CompleteTrainingDetailView()
+                        CompleteTrainingDetailView(training: myTraining)
                     }
                 }
                 .padding(.horizontal, 10)
                 .padding(.top, 10)
                 .sheet(isPresented: $addTrainingSheet) {
                     NewTrainingSheetView(primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor), trainingType: .easy, additionalInfo: "")
+                        .background(LinearGradient(gradient: Gradient(colors: [Color(myTeam.primaryColor).opacity(0.3), Color(myTeam.secondaryColor).opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                 }
                 
                 Divider()
                 if myTrainingLoaded {
-                    ScrollView(.horizontal) {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(0..<myTraining.count) {index in
                                 NavigationLink(destination: TrainingDetailView(training: myTraining[index])) {
@@ -107,7 +175,9 @@ struct AthleteMyAtlasView: View {
                             }
                         }
                     }
-                    .padding()
+                    .padding(.top, 10)
+                    .padding(.bottom, 20)
+                    .padding(.leading, 10)
                 }
                 else {
                     ProgressView().onAppear {
@@ -136,7 +206,7 @@ struct AthleteMyAtlasView: View {
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(myTeam.announcements, id: \.self) {announcement in
+                        ForEach(myTeam.announcements.reversed(), id: \.self) {announcement in
                             AnnouncementListComponent(announcement: announcement, primaryColor: Color(myTeam.primaryColor))
                         }
                     }

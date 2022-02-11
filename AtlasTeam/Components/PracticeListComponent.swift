@@ -11,27 +11,38 @@ struct PracticeListComponent: View {
     let practice: Practice
     let secondaryColor: Color
     var body: some View {
-        VStack {
-            Text("\(practice.timestamp, formatter: practiceDateFormatter)")
-                .font(.system(size: 16, weight: .ultraLight, design: .rounded))
-                .multilineTextAlignment(.leading)
-                .frame(height: 20)
+        HStack(alignment: .center) {
+            VStack {
+                Spacer()
+                Text("\(practice.timestamp, formatter: practiceDateFormatter)")
+                    .font(.system(size: 16, weight: .ultraLight, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .frame(height: 70)
+                
+                Divider()
+                    .padding(0)
+                
+                Text(practice.location)
+                    .font(.system(size: 16, weight: .ultraLight, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .frame(height: 70)
+                Spacer()
+            }
+            .frame(width: 100)
             Divider()
-            Text(practice.location)
-                .font(.system(size: 16, weight: .ultraLight, design: .rounded))
-                .multilineTextAlignment(.leading)
-                .frame(height: 30)
-            Divider()
-            if practice.additionalInfo != "" {
+            VStack {
+                Spacer()
                 Text(practice.additionalInfo)
                     .font(.system(size: 16, weight: .ultraLight, design: .rounded))
-                    .multilineTextAlignment(.leading)
-                    .frame(height: 50)
+                    .multilineTextAlignment(.center)
+                    .frame(height: 150)
+                Spacer()
             }
+            .frame(width: 130, height: 130)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 5)
-        .frame(width: 150, height: 150)
+        .frame(width: 250, height: 150)
         .background(
             LinearGradient(gradient: Gradient(colors: [secondaryColor.opacity(0.2), secondaryColor.opacity(0.5)]), startPoint: .topLeading, endPoint: .bottomTrailing)
         )

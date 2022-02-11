@@ -73,7 +73,7 @@ struct SignUpComponent: View {
                                         }
                                     }
                                     else {
-                                        print(error)
+                                        print(error ?? "")
                                     }
                                 }
                             }

@@ -72,10 +72,33 @@ func getTrainingTypeString(_ type: TrainingType) -> String {
 }
 
 func getNumberOfWeeks(training: [Training], weekStartsOnMonday: Bool) -> Int {
-    for i in (0..<training.count) {
-        print(training[i].date)
+    if training.count == 0 {
+        return 0
     }
-    return 7
+    var myTraining = training.map {$0}
+    myTraining.sort(){$0.date > $1.date}
+    var mostRecentStartToWeek: Date = Date()
+    let newestDate = myTraining[0].date
+    for i in 0..<7 {
+        let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
+        if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (weekStartsOnMonday ? 2 : 1) {
+            mostRecentStartToWeek = dateToCheck
+            break
+        }
+    }
+    let oldestDate = myTraining[myTraining.count - 1].date
+    let numberOfDays = Calendar.current.dateComponents([.day], from: oldestDate, to: mostRecentStartToWeek)
+    let numberOfWeeks = Double(numberOfDays.day!) / 7.00
+    let roundedWeeks = Int(ceil(numberOfWeeks))
+    if mostRecentStartToWeek == oldestDate {
+        return 1
+    }
+    if mostRecentStartToWeek != newestDate {
+        return roundedWeeks + 1
+    }
+    else {
+        return roundedWeeks
+    }
 }
 
 func getTrainingTypeFromString(_ typeString: String) -> TrainingType {
@@ -94,6 +117,54 @@ func getTrainingTypeFromString(_ typeString: String) -> TrainingType {
             return .easy
     }
 }
+
+func getMinMax(index: Int, training: [Training], weekStartsOnMonday: Bool) -> [Date] {
+    var myTraining = training.map {$0}
+    myTraining.sort(){$0.date > $1.date}
+    var mostRecentStartToWeek: Date = Date()
+    let newestDate = myTraining[0].date
+    for i in 0..<7 {
+        let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
+        if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (weekStartsOnMonday ? 2 : 1) {
+            mostRecentStartToWeek = dateToCheck
+            break
+        }
+    }
+    let minDate = Calendar.current.date(byAdding: .day, value: -index*7, to: mostRecentStartToWeek)!
+    let maxDate = Calendar.current.date(byAdding: .day, value: 6, to: minDate)!
+    let minDateNoTime = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: minDate)!
+    let maxDateNoTime = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: maxDate)!
+    return [minDateNoTime, maxDateNoTime]
+}
+
+func getMinMaxThisWeek(weekStartsOnMonday: Bool) -> [Date] {
+    var mostRecentStartToWeek: Date = Date()
+    let newestDate = Date()
+    for i in 0..<7 {
+        let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
+        if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (weekStartsOnMonday ? 2 : 1) {
+            mostRecentStartToWeek = dateToCheck
+            break
+        }
+    }
+    let maxDate = Calendar.current.date(byAdding: .day, value: 6, to: mostRecentStartToWeek)!
+    let minDateNoTime = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: mostRecentStartToWeek)!
+    let maxDateNoTime = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: maxDate)!
+    print(minDateNoTime)
+    print(maxDateNoTime)
+    return [minDateNoTime, maxDateNoTime]
+}
+
+func getStats(_ filteredTraining: [Training]) -> [Double] {
+    var sum = 0.00
+    var ratingAvg = 0.00
+    for i in 0..<filteredTraining.count {
+        sum += filteredTraining[i].mileage
+        ratingAvg += Double(filteredTraining[i].rating)
+    }
+    return [sum, ratingAvg/Double(filteredTraining.count)]
+}
+
 
 func getTypeColor(_ type: TrainingType) -> Color {
     switch type {

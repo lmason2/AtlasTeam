@@ -20,7 +20,7 @@ struct Team {
     var trainers: [CKRecord.Reference]
     var primaryString: String
     var secondaryString: String
-    var announcements: [String]
+    var announcements: [CKRecord.Reference]
     var practices: [CKRecord.Reference]
     var races: [CKRecord.Reference]
     var weekStartsOnMonday: Bool

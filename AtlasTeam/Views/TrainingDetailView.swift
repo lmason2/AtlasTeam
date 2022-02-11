@@ -6,9 +6,46 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct TrainingDetailView: View {
+    // MARK: - PROPERTIES
     let training: Training
+    let myTeam: Team
+    @State var editSheetShown: Bool = false
+    @State var coachesView: Bool = true
+    @Binding var myTrainingLoaded: Bool
+    let userID = UserDefaults.standard.string(forKey: "userID")
+    
+    // MARK: - FUNCTIONS
+    func DeleteActivity() {
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        publicDatabase.delete(withRecordID: training.name.recordID) { (id, error) in
+            if id != nil {
+                publicDatabase.fetch(withRecordID: CKRecord.ID(recordName: userID!)) { (fetched, error) in
+                    if let selfRecord = fetched {
+                        let currentActivities = selfRecord["activities"] as? [CKRecord.Reference] ?? []
+                        let updatedActivities = currentActivities.filter { $0 != training.name }
+                        selfRecord["activities"] = updatedActivities
+                        publicDatabase.save(selfRecord) { record, error in
+                            if let error = error {
+                                print(error)
+                            }
+                            else {
+                                print("successfully removed activity from self")
+                                myTrainingLoaded = false
+                            }
+                        }
+                    }
+                }
+            }
+            if error != nil {
+                print(error!)
+            }
+        }
+    }
+    
+    // MARK: - BODY
     var body: some View {
         VStack {
             Text("\(training.date, formatter: trainingDetailDateFormatter)")
@@ -137,7 +174,7 @@ struct TrainingDetailView: View {
                     Group {
                         HStack {
                             VStack {
-                                Text(training.info ?? "None")
+                                Text(training.info)
                                     .font(.system(size: 15, weight: .semibold, design: .rounded))
                             }
                             Spacer()
@@ -150,6 +187,29 @@ struct TrainingDetailView: View {
                 }
             }
             Spacer()
+            if !coachesView {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        DeleteActivity()
+                    }, label: {
+                        Image(systemName: "trash.circle")
+                            .foregroundColor(Color.white)
+                            .font(.system(size: 32))
+                    })
+//                    Spacer()
+//                    Button(action: {
+//                        editSheetShown = true
+//                    }, label: {
+//                        Image(systemName: "pencil.circle")
+//                            .foregroundColor(Color.white)
+//                            .font(.system(size: 32))
+//                    })
+                    Spacer()
+                }
+                .padding(.bottom, 10)
+                .padding(.horizontal, 10)
+            }
         }
         .padding(.top, 20)
         .padding(.horizontal, 5)
@@ -158,11 +218,8 @@ struct TrainingDetailView: View {
         .cornerRadius(10)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct TrainingDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        TrainingDetailView(training: Training(date: Date(), type: .easy, mileage: 10.0, minutes: nil, rating: 8, info: ""))
+        .sheet(isPresented: $editSheetShown) {
+            EditTrainingSheetView()
+        }
     }
 }

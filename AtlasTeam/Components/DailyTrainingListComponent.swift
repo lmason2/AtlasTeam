@@ -38,9 +38,3 @@ struct DailyTrainingListComponent: View {
         }
     }
 }
-
-struct DailyTrainingListComponent_Previews: PreviewProvider {
-    static var previews: some View {
-        DailyTrainingListComponent(training: Training(date: Date(), type: .easy, mileage: 10.0, minutes: nil, rating: 8, info: "", raceDistance: nil, raceTime: nil))
-    }
-}

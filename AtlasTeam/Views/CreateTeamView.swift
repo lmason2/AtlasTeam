@@ -27,7 +27,6 @@ struct CreateTeamView: View {
     // MARK: - FUNCTIONS
     func addTeamToCoach(coach: CKRecord, team: CKRecord) {
         let publicDatabase = CKContainer.default().publicCloudDatabase
-        let reference = CKRecord.Reference(record: coach, action: .none)
         coach["team"] = CKRecord.Reference(record: team, action: .none)
 
         publicDatabase.save(coach) { record, error in
@@ -62,7 +61,7 @@ struct CreateTeamView: View {
                         let primaryColorString = UIColor(primaryColor).toHex
                         let secondaryColorString = UIColor(secondaryColor).toHex
                         record["password"] = password
-                        record["coach"] = CKRecord.Reference(record: coachRecord, action: .deleteSelf)
+                        record["coach"] = CKRecord.Reference(record: coachRecord, action: .none)
                         record["primaryColor"] = primaryColorString ?? UIColor(Color.accentColor).toHex!
                         record["secondaryColor"] = secondaryColorString ?? UIColor(Color("Blue")).toHex!
                         record["startsOnMonday"] = weekStartsOnMonday ? Int64(1) : Int64(0)
@@ -79,13 +78,13 @@ struct CreateTeamView: View {
                             }
                             else {
                                 print("error")
-                                print(error)
+                                print(error ?? "")
                             }
                         } //: SAVE NEW TEAM
                         return
                     } //: TEAM NAME CHECK PASSED
                     else {
-                        print(results)
+                        print(results ?? "")
                         message = "Team name already exists"
                         showAlert = true
                     } //: TEAM NAME ALREADY EXISTS

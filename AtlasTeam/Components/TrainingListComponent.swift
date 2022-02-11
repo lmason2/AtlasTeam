@@ -50,9 +50,3 @@ struct TrainingListComponent: View {
         .cornerRadius(5)
     }
 }
-
-struct TrainingListComponent_Previews: PreviewProvider {
-    static var previews: some View {
-        TrainingListComponent(training: Training(date: Date(), type: .easy, mileage: 10.0, minutes: 65, rating: 8, info: "Additional Info"))
-    }
-}

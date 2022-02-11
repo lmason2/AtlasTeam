@@ -8,12 +8,16 @@
 import SwiftUI
 
 struct AnnouncementListComponent: View {
-    let announcement: String
+    let announcement: Announcement
     let primaryColor: Color
     
     var body: some View {
         VStack {
-            Text(announcement)
+            Text(announcement.title)
+                .foregroundColor(Color.black)
+            Divider()
+            Text(announcement.content)
+                .foregroundColor(Color.black)
                 .font(.system(size: 16, weight: .ultraLight, design: .rounded))
                 .multilineTextAlignment(.leading)
         }
@@ -24,11 +28,5 @@ struct AnnouncementListComponent: View {
             LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.2), primaryColor.opacity(0.7)]), startPoint: .top, endPoint: .bottom)
         )
         .cornerRadius(5)
-    }
-}
-
-struct AnnouncementListComponent_Previews: PreviewProvider {
-    static var previews: some View {
-        AnnouncementListComponent(announcement: "Testing", primaryColor: Color("Blue"))
     }
 }

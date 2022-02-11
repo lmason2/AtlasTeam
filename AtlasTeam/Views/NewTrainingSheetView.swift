@@ -42,6 +42,10 @@ struct NewTrainingSheetView: View {
         }
         record["rating"] = Int(rating)
         record["type"] = getTrainingTypeString(trainingType)
+        if trainingType == .race {
+            record["raceDistance"] = raceDistance
+            record["raceTime"] = raceTime
+        }
 
         let publicDatabase = CKContainer.default().publicCloudDatabase
         publicDatabase.save(record) { recordResult, error in
@@ -60,7 +64,6 @@ struct NewTrainingSheetView: View {
                                 print(error)
                             }
                             else {
-                                let training = Training(date: date, type: trainingType, mileage: unwrappedMileage, minutes: Double(minutes), rating: Int(rating), info: additionalInfo)
                                 myTrainings = []
                                 myTrainingLoaded = false
                                 displayingThisSheet = false
@@ -75,7 +78,6 @@ struct NewTrainingSheetView: View {
                                 print(error)
                             }
                             else {
-                                let training = Training(date: date, type: trainingType, mileage: unwrappedMileage, minutes: Double(minutes), rating: Int(rating), info: additionalInfo)
                                 myTrainings = []
                                 myTrainingLoaded = false
                                 displayingThisSheet = false
@@ -87,7 +89,7 @@ struct NewTrainingSheetView: View {
             else {
                 print("error")
                 print("here")
-                print(error)
+                print(error ?? "")
             }
         } //: SAVE NEW TEAM
     }

@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import CloudKit
 
 struct Training {
+    let name: CKRecord.Reference
     let date: Date
     let type: TrainingType
     let mileage: Double
@@ -22,6 +24,9 @@ struct Training {
     }
     var minutesString: String {
         if minutes != nil {
+            if minutes! == 0.0 {
+                return "N/A"
+            }
             return String(Int(minutes!))
         }
         return "N/A"
@@ -31,6 +36,9 @@ struct Training {
             return "N/A"
         }
         else {
+            if minutes! == Double(0) {
+                return "N/A"
+            }
             let minutesPerMileDecimal = minutes! / mileage
             let minutesPerMile = Int(minutesPerMileDecimal)
             let decimal = minutesPerMileDecimal - Double(minutesPerMile)

@@ -99,7 +99,7 @@ struct LogInComponent: View {
                                                     isAuthenticated = true
                                                 }
                                                 else {
-                                                    print(error)
+                                                    print(error ?? "")
                                                 }
                                             }
                                         }

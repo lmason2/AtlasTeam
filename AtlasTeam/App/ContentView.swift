@@ -41,7 +41,7 @@ struct ContentView: View {
             let athletes = teamRecord.value(forKey: "athletes") as? [CKRecord.Reference] ?? []
             let primaryString = teamRecord.value(forKey: "primaryColor") as! String
             let secondaryString = teamRecord.value(forKey: "secondaryColor") as! String
-            let announcements = teamRecord.value(forKey: "announcements") as? [String] ?? []
+            let announcements = teamRecord.value(forKey: "announcements") as? [CKRecord.Reference] ?? []
             let practices = teamRecord.value(forKey: "practices") as? [CKRecord.Reference] ?? []
             let races = teamRecord.value(forKey: "races") as? [CKRecord.Reference] ?? []
             let weekStartsOnMonday = teamRecord.value(forKey: "startsOnMonday") as? Int64 ?? Int64(1)

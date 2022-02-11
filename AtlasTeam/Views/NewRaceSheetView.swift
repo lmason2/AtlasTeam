@@ -15,6 +15,7 @@ struct NewRaceSheetView: View {
     @State var location: String = ""
     @State var additionalInfo: String = ""
     @State var date: Date = Date()
+    @State var successAlert: Bool = false
     @Binding var myTeam: Team
     @Binding var upcomingRacesLoaded: Bool
     @Binding var displayingThisSheet: Bool
@@ -40,7 +41,6 @@ struct NewRaceSheetView: View {
                     }
                     else {
                         let team = results![0]
-                        let teamReference = CKRecord.Reference(record: team, action: .none)
                         if var currentRaceRecords = team.value(forKey: "races") as? [CKRecord.Reference] {
                             currentRaceRecords.append(CKRecord.Reference(record: recordResult!, action: .none))
                             team["races"] = currentRaceRecords
@@ -49,13 +49,12 @@ struct NewRaceSheetView: View {
                                     print(error)
                                 }
                                 else {
-                                    let race = Race(date: date, name: name, location: location, additionalInfo: additionalInfo)
+                                    successAlert = true
                                     var races = myTeam.races
                                     races.append(CKRecord.Reference(record: recordResult!, action: .none))
                                     upcomingRaces = []
                                     upcomingRacesLoaded = false
                                     myTeam.races = races
-                                    displayingThisSheet = false
                                 }
                             }
                         }
@@ -67,13 +66,12 @@ struct NewRaceSheetView: View {
                                     print(error)
                                 }
                                 else {
-                                    let race = Race(date: date, name: name, location: location, additionalInfo: additionalInfo)
+                                    successAlert = true
                                     var races = myTeam.races
                                     races.append(CKRecord.Reference(record: recordResult!, action: .none))
                                     upcomingRaces = []
                                     upcomingRacesLoaded = false
                                     myTeam.races = races
-                                    displayingThisSheet = false
                                 }
                             }
                         }
@@ -83,7 +81,7 @@ struct NewRaceSheetView: View {
             else {
                 print("error")
                 print("here")
-                print(error)
+                print(error ?? "")
             }
         } //: SAVE NEW TEAM
     }
@@ -155,6 +153,13 @@ struct NewRaceSheetView: View {
         }
         .onTapGesture {
             infoFocused = false
+        }
+        .alert("Success posting race", isPresented: $successAlert) {
+            Button(action: {
+                displayingThisSheet = false
+            }, label: {
+                Text("Okay")
+            })
         }
     }
 }

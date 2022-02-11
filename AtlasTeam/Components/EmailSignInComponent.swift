@@ -37,6 +37,7 @@ struct EmailSignInComponent: View {
 
             if (error != nil) {
                print("error")
+                print(error)
             } else {
                 if results!.count > 1 {
                     print("error")

@@ -13,30 +13,21 @@ struct CompleteTrainingDetailView: View {
     let username: String
     let primaryColor: Color
     let secondaryColor: Color
+    let myTeam: Team
+    
     var body: some View {
         List {
             CompleteTrainingListHeader()
                 .listRowBackground(LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.3), secondaryColor.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
-            ForEach(0..<getNumberOfWeeks(training: training, weekStartsOnMonday: weekStartsOnMonday)) { _ in
-                NavigationLink(destination: SpecificWeekTrainingView(training: training, dateString: "", primaryColor: primaryColor, secondaryColor: secondaryColor), label: {
-                    WeeklyTrainingListComponent(training: [], minDate: Date(), maxDate: Date())
+            ForEach(0..<getNumberOfWeeks(training: training, weekStartsOnMonday: weekStartsOnMonday)) { index in
+                let minMax = getMinMax(index: index, training: training, weekStartsOnMonday: weekStartsOnMonday)
+                let filteredTraining = training.filter { $0.date >= minMax[0] && $0.date <= minMax[1] }
+                NavigationLink(destination: SpecificWeekTrainingView(training: filteredTraining.reversed(), minDate: minMax[0], maxDate: minMax[1], primaryColor: primaryColor, secondaryColor: secondaryColor, myTeam: myTeam), label: {
+                    WeeklyTrainingListComponent(training: filteredTraining, minDate: minMax[0], maxDate: minMax[1])
                 })
             }
             .listRowBackground(LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.3), secondaryColor.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
         }
         .navigationTitle(username)
-    }
-}
-
-struct CompeteTrainingDetailView_Previews: PreviewProvider {
-    static let myTraining = [
-        Training(date: Date(), type: .easy, mileage: 10.0, minutes: 70, rating: 8, info: "Additional"),
-        Training(date: Date(), type: .workout, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-        Training(date: Date(), type: .race, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-        Training(date: Date(), type: .mediumLong, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-        Training(date: Date(), type: .long, mileage: 10.0, minutes: 60, rating: 9, info: "Additional"),
-    ]
-    static var previews: some View {
-        CompleteTrainingDetailView(training: myTraining, weekStartsOnMonday: true, username: "Lukemason11", primaryColor: Color.blue, secondaryColor: Color.red)
     }
 }

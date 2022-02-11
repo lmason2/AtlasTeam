@@ -11,7 +11,8 @@ import CloudKit
 struct NewPracticeSheetView: View {
     @State var location: String = ""
     @State var additionalInfo: String = ""
-    @State var date: Date = Date()
+    @State var date: Date = Calendar.current.date(byAdding: .day, value: +1, to: Date())!
+    @State var successAlert: Bool = false
     @Binding var myTeam: Team
     @Binding var upcomingPracticesLoaded: Bool
     @Binding var displayingThisSheet: Bool
@@ -35,7 +36,6 @@ struct NewPracticeSheetView: View {
                     }
                     else {
                         let team = results![0]
-                        let teamReference = CKRecord.Reference(record: team, action: .none)
                         if var currentPracticeRecords = team.value(forKey: "practices") as? [CKRecord.Reference] {
                             currentPracticeRecords.append(CKRecord.Reference(record: recordResult!, action: .none))
                             team["practices"] = currentPracticeRecords
@@ -44,13 +44,12 @@ struct NewPracticeSheetView: View {
                                     print(error)
                                 }
                                 else {
-                                    let practice = Practice(timestamp: date, location: location, additionalInfo: additionalInfo)
+                                    successAlert = true
                                     var practices = myTeam.practices
                                     practices.append(CKRecord.Reference(record: recordResult!, action: .none))
                                     upcomingPractices = []
                                     upcomingPracticesLoaded = false
                                     myTeam.practices = practices
-                                    displayingThisSheet = false
                                 }
                             }
                         }
@@ -62,13 +61,12 @@ struct NewPracticeSheetView: View {
                                     print(error)
                                 }
                                 else {
-                                    let practice = Practice(timestamp: date, location: location, additionalInfo: additionalInfo)
+                                    successAlert = true
                                     var practices = myTeam.practices
                                     practices.append(CKRecord.Reference(record: recordResult!, action: .none))
                                     upcomingPractices = []
                                     upcomingPracticesLoaded = false
                                     myTeam.practices = practices
-                                    displayingThisSheet = false
                                 }
                             }
                         }
@@ -78,7 +76,7 @@ struct NewPracticeSheetView: View {
             else {
                 print("error")
                 print("here")
-                print(error)
+                print(error ?? "")
             }
         } //: SAVE NEW TEAM
     }
@@ -136,6 +134,13 @@ struct NewPracticeSheetView: View {
                     .overlay(Capsule().stroke(Color.white))
             })
             Spacer()
+        }
+        .alert("Success posting practice", isPresented: $successAlert) {
+            Button(action: {
+                displayingThisSheet = false
+            }, label: {
+                Text("Okay")
+            })
         }
     }
 }

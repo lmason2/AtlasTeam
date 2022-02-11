@@ -11,31 +11,7 @@ struct AthleteRowComponent: View {
     let athlete: Athlete
     let primaryColor: Color
     let weekStartsOnMonday: Bool
-    
-    var stats: [Double] {
-        var myTraining = athlete.activitiesUnwrapped.map {$0}
-        myTraining.sort(){$0.date > $1.date}
-        var mostRecentStartToWeek: Date = Date()
-        let newestDate = Date()
-        for i in 0..<7 {
-            let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
-            if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (weekStartsOnMonday ? 1 : 7) {
-                mostRecentStartToWeek = dateToCheck
-                break
-            }
-        }
-        let filteredTraining = myTraining.compactMap({ $0 as Training }).filter { $0.date >= mostRecentStartToWeek }
-        if filteredTraining.count == 0 {
-            return [0.00, 0.00]
-        }
-        var sum = 0.00
-        var ratingAvg = 0.00
-        for i in 0..<filteredTraining.count {
-            sum += filteredTraining[i].mileage
-            ratingAvg += Double(filteredTraining[i].rating)
-        }
-        return [sum, ratingAvg/Double(filteredTraining.count)]
-    }
+    let stats: [Double]
     
     var body: some View {
         VStack {

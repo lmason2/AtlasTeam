@@ -31,6 +31,39 @@ struct JoinTeamView: View {
         }
     }
     
+    func createSubscription() {
+        
+        let subscription = CKQuerySubscription(recordType: "Announcement", predicate: NSPredicate(format: "teamName == %@", teamAppStorage), options: .firesOnRecordCreation)
+        
+        // Here we customize the notification message
+        let info = CKSubscription.NotificationInfo()
+        
+        // if you want to use multiple field combined for the title of push notification
+         info.titleLocalizationKey = "%1$@" // if want to add more, the format will be "%3$@", "%4$@" and so on
+         info.titleLocalizationArgs = ["title"]
+        
+        // this will use the 'content' field in the Record type 'notifications' as the content of the push notification
+        info.alertLocalizationKey = "%1$@"
+        info.alertLocalizationArgs = ["content"]
+        
+        // increment the red number count on the top right corner of app icon
+        info.shouldBadge = true
+        
+        // use system default notification sound
+        info.soundName = "default"
+        
+        subscription.notificationInfo = info
+        
+        // Save the subscription to Public Database in Cloudkit
+        CKContainer.default().publicCloudDatabase.save(subscription, completionHandler: { subscription, error in
+            if error == nil {
+                // Subscription saved successfully
+            } else {
+                print (error)
+            }
+        })
+    }
+    
     func joinTeam() {
         let publicDatabase = CKContainer.default().publicCloudDatabase
         let predicate = NSPredicate(format: "name == %@", name)
@@ -45,6 +78,7 @@ struct JoinTeamView: View {
                 var addingSelfToTeam = false
                 var addingTeamToSelf = false
                 dataLoaded = false
+                print(results)
                 let team = results![0]
                 if password == team.value(forKey: "password") as! String {
                     let teamReference = CKRecord.Reference(record: team, action: .none)
@@ -57,6 +91,7 @@ struct JoinTeamView: View {
                                 }
                                 else {
                                     print("successfully added team to self")
+                                    createSubscription()
                                     addingTeamToSelf = true
                                     if addingSelfToTeam == true {
                                         teamAppStorage = team.recordID.recordName
@@ -72,6 +107,7 @@ struct JoinTeamView: View {
                                         print(error)
                                     }
                                     else {
+                                        createSubscription()
                                         addingSelfToTeam = true
                                         if addingTeamToSelf == true {
                                             teamAppStorage = team.recordID.recordName
@@ -82,13 +118,14 @@ struct JoinTeamView: View {
                                 }
                             } //: APPENDING LIST CONDITIONAL
                             else {
-                                var currentMemberType: [CKRecord.Reference] = [selfReference]
+                                let currentMemberType: [CKRecord.Reference] = [selfReference]
                                 team[getKeyBasedOnType()] = currentMemberType
                                 publicDatabase.save(team) { record, error in
                                     if let error = error {
                                         print(error)
                                     }
                                     else {
+                                        createSubscription()
                                         addingSelfToTeam = true
                                         if addingTeamToSelf == true {
                                             teamAppStorage = team.recordID.recordName

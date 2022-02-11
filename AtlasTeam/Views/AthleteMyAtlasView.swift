@@ -13,6 +13,9 @@ struct AthleteMyAtlasView: View {
     @State var athletesLoaded: Bool = false
     @State var athletes: [Athlete] = []
     
+    @State var announcementsLoaded: Bool = false
+    @State var announcements: [Announcement] = []
+    
     @State var upcomingPracticesLoaded: Bool = false
     @State var upcomingPractices: [Practice] = []
     
@@ -30,8 +33,43 @@ struct AthleteMyAtlasView: View {
     
     @State var filteredTraining: [Training] = []
     
+    @State var editing: Bool = false
+    
     let userID = UserDefaults.standard.string(forKey: "userID")
     let username = UserDefaults.standard.string(forKey: "username")
+    
+    func getAnnouncements() {
+        // query for practices
+        let publicDatabase = CKContainer.default().publicCloudDatabase
+        var recordIDs: [CKRecord.ID] = []
+        for i in 0..<myTeam.announcements.count {
+            recordIDs.append(myTeam.announcements[i].recordID)
+        }
+        publicDatabase.fetch(withRecordIDs: recordIDs) { result in
+            do {
+                // Create audio player object
+                let results = try result.get()
+                        
+                for i in 0..<recordIDs.count {
+                    do {
+                        let record = try results[recordIDs[i]]?.get()
+                        let title = record?.value(forKey: "title") as! String
+                        let content = record?.value(forKey: "content") as! String
+                        announcements.append(Announcement(title: title, content: content))
+                    }
+                    catch {
+                        print("error")
+                    }
+                }
+                announcements.reverse()
+                announcementsLoaded = true
+            }
+            catch {
+                // Couldn't create audio player object, log the error
+                print("Error")
+            }
+        }
+    }
     
     func getPractices() {
         // query for practices
@@ -126,6 +164,7 @@ struct AthleteMyAtlasView: View {
                         for i in 0..<recordIDs.count {
                             do {
                                 let record = try results[recordIDs[i]]?.get()
+                                let name = CKRecord.Reference(record: record!, action: .none)
                                 let additionalInfo = record?.value(forKey: "additionalInfo") as? String ?? ""
                                 let date = record?.value(forKey: "date") as? Date ?? Date()
                                 let mileage = record?.value(forKey: "mileage") as? Double ?? 0.00
@@ -139,7 +178,7 @@ struct AthleteMyAtlasView: View {
                                     raceTime = record?.value(forKey: "raceTime") as? String ?? ""
                                 }
                                 let rating = record?.value(forKey: "rating") as? Int ?? 5
-                                let training = Training(date: date, type: type, mileage: mileage, minutes: minutes, rating: rating, info: additionalInfo, raceDistance: raceDistance, raceTime: raceTime)
+                                let training = Training(name: name, date: date, type: type, mileage: mileage, minutes: minutes, rating: rating, info: additionalInfo, raceDistance: raceDistance, raceTime: raceTime)
                                 myTraining.append(training)
                                 
                             }
@@ -148,16 +187,16 @@ struct AthleteMyAtlasView: View {
                             }
                         }
                         myTraining.sort(){$0.date > $1.date}
-                        var mostRecentStartToWeek: Date = Date()
                         let newestDate = Date()
                         for i in 0..<7 {
                             let dateToCheck = Calendar.current.date(byAdding: .day, value: -i, to: newestDate)!
                             if Calendar.current.dateComponents([.weekday], from: dateToCheck).weekday == (myTeam.weekStartsOnMonday ? 1 : 7) {
-                                mostRecentStartToWeek = dateToCheck
                                 break
                             }
                         }
-                        filteredTraining = myTraining.compactMap({ $0 as Training }).filter { $0.date >= mostRecentStartToWeek }
+                        let minMax = getMinMaxThisWeek(weekStartsOnMonday: myTeam.weekStartsOnMonday)
+                        filteredTraining =  myTraining.compactMap({ $0 as Training }).filter { $0.date >= minMax[0] && $0.date <= minMax[1]}
+                        filteredTraining.reverse()
                         myTrainingLoaded = true
                     }
                     catch {
@@ -168,7 +207,7 @@ struct AthleteMyAtlasView: View {
             }
             else {
                 print("error")
-                print(error)
+                print(error ?? "")
             }
         }
     }
@@ -185,7 +224,7 @@ struct AthleteMyAtlasView: View {
         VStack{
             VStack {
                 HStack(spacing: 5) {
-                    Text("This Week")
+                    Text("Training - This Week")
                         .foregroundColor(Color(myTeam.secondaryColor))
                         .font(.system(size: 20, weight: .semibold, design: .rounded))
                     Spacer()
@@ -211,7 +250,7 @@ struct AthleteMyAtlasView: View {
                         
                         Button(action: {
                         }, label: {
-                            NavigationLink(destination: CompleteTrainingDetailView(training: myTraining, weekStartsOnMonday: myTeam.weekStartsOnMonday, username: username!, primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor)), label: {
+                            NavigationLink(destination: CompleteTrainingDetailView(training: myTraining, weekStartsOnMonday: myTeam.weekStartsOnMonday, username: username!, primaryColor: Color(myTeam.primaryColor), secondaryColor: Color(myTeam.secondaryColor), myTeam: myTeam), label: {
                                 Image(systemName: "line.3.horizontal.circle")
                                     .foregroundColor(Color(myTeam.secondaryColor))
                             })
@@ -231,8 +270,8 @@ struct AthleteMyAtlasView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(0..<filteredTraining.count) {index in
-                                NavigationLink(destination: TrainingDetailView(training: filteredTraining.reversed()[index])) {
-                                    TrainingListComponent(training: filteredTraining.reversed()[index])
+                                NavigationLink(destination: TrainingDetailView(training: filteredTraining[index], myTeam: myTeam, coachesView: false, myTrainingLoaded: $myTrainingLoaded)) {
+                                    TrainingListComponent(training: filteredTraining[index])
                                 }
                                 .tint(Color.black)
                             }
@@ -244,6 +283,10 @@ struct AthleteMyAtlasView: View {
                 }
                 else {
                     ProgressView().onAppear {
+                        if myTraining.count != 0 || filteredTraining.count != 0 {
+                            myTraining = []
+                            filteredTraining = []
+                        }
                         getTraining()
                     }
                     .padding(.bottom, 10)
@@ -267,16 +310,26 @@ struct AthleteMyAtlasView: View {
                 .padding(.top, 10)
                 Divider()
                 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(myTeam.announcements.reversed(), id: \.self) {announcement in
-                            AnnouncementListComponent(announcement: announcement, primaryColor: Color(myTeam.primaryColor))
+                if announcementsLoaded {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(0..<announcements.count) {index in
+                                NavigationLink(destination: AnnouncementDetailView(myTeam: myTeam, announcement: announcements[index]), label: {
+                                    AnnouncementListComponent(announcement: announcements[index], primaryColor: Color(myTeam.primaryColor))
+                                })
+                            }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 10)
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.vertical)
+                }
+                else {
+                    ProgressView().onAppear {
+                        getAnnouncements()
+                    }
                     .padding(.bottom, 10)
                 }
-                .padding(.vertical)
             }
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color(myTeam.primaryColor), lineWidth: 2))
             .background(Color(UIColor.systemGray6))

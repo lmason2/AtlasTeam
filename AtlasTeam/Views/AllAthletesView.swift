@@ -12,16 +12,19 @@ struct AllAthletesView: View {
     let primaryColor: Color
     let secondaryColor: Color
     let weekStartsOnMonday: Bool
+    let myTeam: Team
     var body: some View {
         VStack{
             List {
                 ListHeaderRowComponent()
                     .listRowBackground(LinearGradient(gradient: Gradient(colors: [primaryColor.opacity(0.3), secondaryColor.opacity(0.3)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                 ForEach(0..<athletes.count) {index in
+                    let minMax = getMinMaxThisWeek(weekStartsOnMonday: weekStartsOnMonday)
+                    let filteredTraining = athletes[index].activitiesUnwrapped.filter { $0.date >= minMax[0] }
                     NavigationLink(destination: {
-                        CompleteTrainingDetailView(training: athletes[index].activitiesUnwrapped, weekStartsOnMonday: weekStartsOnMonday, username: athletes[index].username, primaryColor: primaryColor, secondaryColor: secondaryColor)
+                        CompleteTrainingDetailView(training: athletes[index].activitiesUnwrapped, weekStartsOnMonday: weekStartsOnMonday, username: athletes[index].username, primaryColor: primaryColor, secondaryColor: secondaryColor, myTeam: myTeam)
                     }, label: {
-                        AllAthleteRowComponent(athlete: athletes[index], weekStartsOnMonday: weekStartsOnMonday)
+                        AllAthleteRowComponent(athlete: athletes[index], weekStartsOnMonday: weekStartsOnMonday, stats: getStats(filteredTraining))
                             .padding(.vertical, 20)
                     })
                 }
@@ -29,12 +32,5 @@ struct AllAthletesView: View {
             }
         }
         .navigationTitle("This Week's Mileage")
-    }
-}
-
-struct AllAthletesView_Previews: PreviewProvider {
-    static var athletes: [Athlete] = [Athlete(username: "Username", email: "Test@email.com", activityRecords: [], activitiesUnwrapped: [Training(date: Date(), type: .long, mileage: 18, minutes: 120, rating: 10, info: "Long Run", raceDistance: "", raceTime: "" )]), Athlete(username: "Username", email: "Test@email.com", activityRecords: [], activitiesUnwrapped: [Training(date: Date(), type: .long, mileage: 18, minutes: 120, rating: 10, info: "Long Run", raceDistance: "", raceTime: "" )])]
-    static var previews: some View {
-        AllAthletesView(athletes: athletes, primaryColor: Color.blue, secondaryColor: Color.red, weekStartsOnMonday: true)
     }
 }

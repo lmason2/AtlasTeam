@@ -12,12 +12,20 @@ struct WeeklyTrainingListComponent: View {
     let minDate: Date
     let maxDate: Date
     
-    func getMileageByWeek(minDate: Date, maxDate: Date) -> Double {
-        return 10.0
+    func getMileage() -> Double {
+        var sum = 0.00
+        for i in 0..<training.count {
+            sum += training[i].mileage
+        }
+        return sum
     }
     
-    func getRatingByWeek(minDate: Date, maxDate: Date) -> Double {
-        return 8.5
+    func getRating() -> Double {
+        var rating = 0.00
+        for i in 0..<training.count {
+            rating += Double(training[i].rating)
+        }
+        return rating / Double(training.count)
     }
     
     var body: some View {
@@ -29,7 +37,7 @@ struct WeeklyTrainingListComponent: View {
             HStack {
                 HStack {
                     Spacer()
-                    Text("\(getMileageByWeek(minDate: minDate, maxDate: maxDate), specifier: "%.2f")")
+                    Text("\(getMileage(), specifier: "%.2f")")
                         .frame(width: 65, alignment: .center)
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                     Spacer()
@@ -37,7 +45,7 @@ struct WeeklyTrainingListComponent: View {
                 Divider()
                 HStack {
                     Spacer()
-                    Text("\(getRatingByWeek(minDate: minDate, maxDate: maxDate), specifier:" %.2f")")
+                    Text("\(getRating(), specifier:" %.2f")")
                         .frame(width: 65, alignment: .center)
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                     Spacer()
@@ -45,14 +53,5 @@ struct WeeklyTrainingListComponent: View {
             }
             .frame(width: 150)
         }
-    }
-}
-
-struct WeeklyTrainingListComponent_Previews: PreviewProvider {
-    static var minDate: Date = Date()
-    static var maxDate: Date = Date()
-    static var training: [Training] = [Training(date: Date(), type: .easy, mileage: 10, minutes: nil, rating: 10, info: "", raceDistance: "", raceTime: "")]
-    static var previews: some View {
-        WeeklyTrainingListComponent(training: training, minDate: Date(), maxDate: Date())
     }
 }

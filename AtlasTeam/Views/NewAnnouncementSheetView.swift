@@ -9,52 +9,72 @@ import SwiftUI
 import CloudKit
 
 struct NewAnnouncementSheetView: View {
+    @State var announcementTitle: String = ""
     @State var announcementContent: String = ""
+    @State var successAlert: Bool = false
     @Binding var myTeam: Team
     @Binding var announcementsLoaded: Bool
     @Binding var displayingThisSheet: Bool
+    @Binding var announcements: [Announcement]
+    @AppStorage("team") var teamAppStorage: String = ""
     
     func submitAnnouncement() {
+        let record = CKRecord(recordType: "Announcement", recordID: CKRecord.ID())
+        record["title"] = announcementTitle
+        record["content"] = announcementContent
+        record["teamName"] = teamAppStorage
+
         let publicDatabase = CKContainer.default().publicCloudDatabase
-        let predicate = NSPredicate(format: "name == %@", myTeam.name)
-        let query = CKQuery(recordType: "Team", predicate: predicate)
-        
-        publicDatabase.perform(query, inZoneWith: nil) {results, error in
-            if results == nil {
-                print("not found")
-                return
+        publicDatabase.save(record) { recordResult, error in
+            if error == nil {
+                let predicate = NSPredicate(format: "name == %@", myTeam.name)
+                let query = CKQuery(recordType: "Team", predicate: predicate)
+                publicDatabase.perform(query, inZoneWith: nil) {results, error in
+                    if results == nil {
+                        print("not found")
+                        return
+                    }
+                    else {
+                        let team = results![0]
+                        if var currentAnnouncements = team.value(forKey: "announcements") as? [CKRecord.Reference] {
+                            currentAnnouncements.append(CKRecord.Reference(record: recordResult!, action: .none))
+                            team["announcements"] = currentAnnouncements
+                            publicDatabase.save(team) { record, error in
+                                if let error = error {
+                                    print(error)
+                                }
+                                else {
+                                    successAlert = true
+                                    announcements = []
+                                    announcementsLoaded = false
+                                    myTeam.announcements = currentAnnouncements
+                                }
+                            }
+                        }
+                        else {
+                            let currentAnnouncements = [CKRecord.Reference(record: recordResult!, action: .none)]
+                            team["announcements"] = currentAnnouncements
+                            publicDatabase.save(team) { record, error in
+                                if let error = error {
+                                    print(error)
+                                }
+                                else {
+                                    successAlert = true
+                                    announcements = []
+                                    announcementsLoaded = false
+                                    myTeam.practices = currentAnnouncements
+                                }
+                            }
+                        }
+                    }
+                }
             }
             else {
-                let team = results![0]
-                let teamReference = CKRecord.Reference(record: team, action: .none)
-                if var currentAnnouncements = team.value(forKey: "announcements") as? [String] {
-                    currentAnnouncements.append(announcementContent)
-                    team["announcements"] = currentAnnouncements
-                    publicDatabase.save(team) { record, error in
-                        if let error = error {
-                            print(error)
-                        }
-                        else {
-                            myTeam.announcements = currentAnnouncements
-                            displayingThisSheet = false
-                        }
-                    }
-                }
-                else {
-                    let announcements = [announcementContent]
-                    team["announcements"] = announcements
-                    publicDatabase.save(team) { record, error in
-                        if let error = error {
-                            print(error)
-                        }
-                        else {
-                            myTeam.announcements = announcements
-                            announcementsLoaded = true
-                        }
-                    }
-                }
+                print("error")
+                print("here")
+                print(error ?? "")
             }
-        }
+        } //: SAVE NEW TEAM
     }
     var body: some View {
         VStack {
@@ -66,6 +86,12 @@ struct NewAnnouncementSheetView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 20)
+            
+            TextField(
+                "Announcement Title",
+                text: $announcementTitle
+            )
+            .padding()
             
             TextEditor(text: $announcementContent)
             .foregroundColor(.black)
@@ -85,6 +111,13 @@ struct NewAnnouncementSheetView: View {
                     .overlay(Capsule().stroke(Color.white))
             })
             Spacer()
+        }
+        .alert("Success posting announcement", isPresented: $successAlert) {
+            Button(action: {
+                displayingThisSheet = false
+            }, label: {
+                Text("Okay")
+            })
         }
     }
 }

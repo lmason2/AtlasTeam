@@ -62,7 +62,8 @@ struct NewAnnouncementSheetView: View {
                                     successAlert = true
                                     announcements = []
                                     announcementsLoaded = false
-                                    myTeam.practices = currentAnnouncements
+                                    myTeam.announcements = currentAnnouncements
+                                    print(announcements)
                                 }
                             }
                         }

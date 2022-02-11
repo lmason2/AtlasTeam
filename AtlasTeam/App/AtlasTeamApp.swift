@@ -19,9 +19,11 @@ struct AtlasTeamApp: App {
             if isAuthenticated {
                 ContentView()
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .preferredColorScheme(.light)
             }
             else {
                 AuthenticationView()
+                    .preferredColorScheme(.light)
             }
         }
     }

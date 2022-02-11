@@ -13,6 +13,8 @@ struct JoinTeamView: View {
     @State var newTeamMemberType: NewTeamMember = .athlete
     @State var name: String = ""
     @State var password: String = ""
+    @State var displayAlert: Bool = false
+    @State var message: String = ""
     let userID = UserDefaults.standard.string(forKey: "userID")
     @AppStorage("team") var teamAppStorage: String = ""
     @AppStorage("dataLoaded") var dataLoaded: Bool = false
@@ -31,38 +33,38 @@ struct JoinTeamView: View {
         }
     }
     
-    func createSubscription() {
-        
-        let subscription = CKQuerySubscription(recordType: "Announcement", predicate: NSPredicate(format: "teamName == %@", teamAppStorage), options: .firesOnRecordCreation)
-        
-        // Here we customize the notification message
-        let info = CKSubscription.NotificationInfo()
-        
-        // if you want to use multiple field combined for the title of push notification
-         info.titleLocalizationKey = "%1$@" // if want to add more, the format will be "%3$@", "%4$@" and so on
-         info.titleLocalizationArgs = ["title"]
-        
-        // this will use the 'content' field in the Record type 'notifications' as the content of the push notification
-        info.alertLocalizationKey = "%1$@"
-        info.alertLocalizationArgs = ["content"]
-        
-        // increment the red number count on the top right corner of app icon
-        info.shouldBadge = true
-        
-        // use system default notification sound
-        info.soundName = "default"
-        
-        subscription.notificationInfo = info
-        
-        // Save the subscription to Public Database in Cloudkit
-        CKContainer.default().publicCloudDatabase.save(subscription, completionHandler: { subscription, error in
-            if error == nil {
-                // Subscription saved successfully
-            } else {
-                print (error)
-            }
-        })
-    }
+//    func createSubscription() {
+//
+//        let subscription = CKQuerySubscription(recordType: "Announcement", predicate: NSPredicate(format: "teamName == %@", teamAppStorage), options: .firesOnRecordCreation)
+//
+//        // Here we customize the notification message
+//        let info = CKSubscription.NotificationInfo()
+//
+//        // if you want to use multiple field combined for the title of push notification
+//         info.titleLocalizationKey = "%1$@" // if want to add more, the format will be "%3$@", "%4$@" and so on
+//         info.titleLocalizationArgs = ["title"]
+//
+//        // this will use the 'content' field in the Record type 'notifications' as the content of the push notification
+//        info.alertLocalizationKey = "%1$@"
+//        info.alertLocalizationArgs = ["content"]
+//
+//        // increment the red number count on the top right corner of app icon
+//        info.shouldBadge = true
+//
+//        // use system default notification sound
+//        info.soundName = "default"
+//
+//        subscription.notificationInfo = info
+//
+//        // Save the subscription to Public Database in Cloudkit
+//        CKContainer.default().publicCloudDatabase.save(subscription, completionHandler: { subscription, error in
+//            if error == nil {
+//                // Subscription saved successfully
+//            } else {
+//                print (error)
+//            }
+//        })
+//    }
     
     func joinTeam() {
         let publicDatabase = CKContainer.default().publicCloudDatabase
@@ -70,8 +72,9 @@ struct JoinTeamView: View {
         let query = CKQuery(recordType: "Team", predicate: predicate)
         
         publicDatabase.perform(query, inZoneWith: nil) {results, error in
-            if results == nil {
-                // print team name doesn't exist
+            if results!.count == 0 {
+                message = "Team not found"
+                displayAlert = true
                 return
             }
             else {
@@ -91,7 +94,7 @@ struct JoinTeamView: View {
                                 }
                                 else {
                                     print("successfully added team to self")
-                                    createSubscription()
+//                                    createSubscription()
                                     addingTeamToSelf = true
                                     if addingSelfToTeam == true {
                                         teamAppStorage = team.recordID.recordName
@@ -107,7 +110,7 @@ struct JoinTeamView: View {
                                         print(error)
                                     }
                                     else {
-                                        createSubscription()
+//                                        createSubscription()
                                         addingSelfToTeam = true
                                         if addingTeamToSelf == true {
                                             teamAppStorage = team.recordID.recordName
@@ -125,7 +128,7 @@ struct JoinTeamView: View {
                                         print(error)
                                     }
                                     else {
-                                        createSubscription()
+//                                        createSubscription()
                                         addingSelfToTeam = true
                                         if addingTeamToSelf == true {
                                             teamAppStorage = team.recordID.recordName
@@ -137,6 +140,10 @@ struct JoinTeamView: View {
                         } //: RECORD EXISTS
                     } //: FETCH CLOSURE
                 } //: TEAM PASSWORD CONDITIONAL
+                else {
+                    message = "Password Incorrect"
+                    displayAlert = true
+                }
             } //: TEAM NAME EXISTS CONDITIONAL
         } //: QUERY FOR TEAM NAME
     }
@@ -201,6 +208,9 @@ struct JoinTeamView: View {
             } //: FORM
             .transition(.slide)
             .navigationTitle(getStringVersion())
+            .alert(message, isPresented: $displayAlert) {
+                Button("OK", role: .cancel) { }
+            }
         } //: CONDITIONAL
         else {
             VStack {
